@@ -1,0 +1,106 @@
+/* SaaS UI Polish for Streamlit */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* Hide default streamlit elements */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* App background */
+.stApp {
+    background-color: #f8fafc;
+}
+
+/* Better buttons */
+button[kind="primary"] {
+    background-color: #2563eb !important;
+    color: white !important;
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
+    padding: 10px 24px !important;
+    font-weight: 500 !important;
+}
+
+button[kind="primary"]:hover {
+    background-color: #1d4ed8 !important;
+}
+
+button[kind="secondary"] {
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    background-color: white !important;
+    padding: 10px 24px !important;
+    font-weight: 500 !important;
+    color: #0f172a !important;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: white !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+
+/* Sidebar Navigation Items */
+.stRadio > div {
+    gap: 12px;
+}
+.stRadio label {
+    background-color: #f1f5f9;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.stRadio label:hover {
+    background-color: #e2e8f0;
+}
+
+/* Metric Cards */
+[data-testid="stMetric"] {
+    background-color: white !important;
+    border-radius: 12px !important;
+    padding: 20px !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e2e8f0 !important;
+    text-align: center;
+}
+
+[data-testid="stMetricValue"] {
+    color: #2563eb !important;
+    font-weight: 700 !important;
+}
+
+/* Headers */
+h1, h2, h3 {
+    color: #0f172a !important;
+}
+h1 {
+    font-weight: 700 !important;
+    margin-bottom: 30px !important;
+}
+h2 {
+    font-weight: 600 !important;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-top: 40px !important;
+    margin-bottom: 20px !important;
+}
+
+/* Streamlit Dataframes */
+[data-testid="stDataFrame"] {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Chat Input */
+[data-testid="stChatInput"] {
+    border-radius: 12px !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
