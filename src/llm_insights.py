@@ -1,5 +1,5 @@
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 def generate_insights(df_summary, api_key):
     """Generates plain-English insights from dataset statistics using LLM."""

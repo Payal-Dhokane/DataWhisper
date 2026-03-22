@@ -1,5 +1,5 @@
 from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 
 def generate_recommendations(df_info, api_key):
     """Generates smart recommendations for preprocessing based on dataframe info."""
