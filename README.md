@@ -25,15 +25,3 @@ A full-stack AI-powered web application built with Streamlit that allows users t
     └── report_generator.py    # HTML report generation logic
 ```
 
-## How to Run Locally
-1. Ensure you have Python installed (Python 3.9+ recommended).
-2. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the Streamlit application:
-   ```bash
-   streamlit run app.py
-   ```
-4. Open the provided `localhost` URL in your browser.
-5. Expand the sidebar, upload your CSV (or click "Load Sample Data"), and provide your **OpenAI API Key** to unlock the AI features!
