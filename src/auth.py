@@ -53,11 +53,7 @@ def authenticate_user():
     authenticator, config_path = load_authenticator()
     
     try:
-        # Try both signatures safely
-        try:
-            name, authentication_status, username = authenticator.login('main')
-        except TypeError:
-            name, authentication_status, username = authenticator.login('Login', 'main')
+        name, authentication_status, username = authenticator.login('Login', 'main')
     except Exception as e:
         st.error(f"Authentication setup error: {str(e)}")
         return False, None
