@@ -67,7 +67,7 @@ def authenticate_user():
         return True, authenticator
         
     # User is NOT logged in. Print the instructions.
-    st.markdown("<h1 style='text-align: center; color: #2563eb;'>Smart EDA Assistant</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #818cf8;'>DataWhisper</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #64748b;'>Please login to access your workspace. <i>(Demo Account: <b>demo</b> / <b>password</b>)</i></p>", unsafe_allow_html=True)
     
     if authentication_status == False:

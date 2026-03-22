@@ -1,4 +1,4 @@
-/* SaaS UI Polish for Streamlit */
+/* DataWhisper SaaS UI Polish */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 * {
@@ -10,39 +10,52 @@
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* App background */
-.stApp {
-    background-color: #f8fafc;
+/* Custom Scrollbar for sleekness */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f111a; 
+}
+::-webkit-scrollbar-thumb {
+    background: #334155; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569; 
 }
 
 /* Better buttons */
 button[kind="primary"] {
-    background-color: #2563eb !important;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
     color: white !important;
     border-radius: 8px !important;
     border: none !important;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
     padding: 10px 24px !important;
     font-weight: 500 !important;
+    transition: all 0.3s ease !important;
 }
 
 button[kind="primary"]:hover {
-    background-color: #1d4ed8 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
 }
 
 button[kind="secondary"] {
     border-radius: 8px !important;
-    border: 1px solid #e2e8f0 !important;
-    background-color: white !important;
+    border: 1px solid #334155 !important;
+    background-color: #1e2130 !important;
     padding: 10px 24px !important;
     font-weight: 500 !important;
-    color: #0f172a !important;
+    color: #f8fafc !important;
+    transition: all 0.2s ease !important;
 }
 
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background-color: white !important;
-    border-right: 1px solid #e2e8f0 !important;
+button[kind="secondary"]:hover {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
 }
 
 /* Sidebar Navigation Items */
@@ -50,57 +63,79 @@ button[kind="secondary"] {
     gap: 12px;
 }
 .stRadio label {
-    background-color: #f1f5f9;
-    padding: 10px 16px;
+    background-color: transparent;
+    padding: 12px 16px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
+    border: 1px solid transparent;
 }
 .stRadio label:hover {
-    background-color: #e2e8f0;
+    background-color: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 /* Metric Cards */
 [data-testid="stMetric"] {
-    background-color: white !important;
+    background-color: #1e2130 !important;
     border-radius: 12px !important;
-    padding: 20px !important;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
-    border: 1px solid #e2e8f0 !important;
+    padding: 24px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid #334155 !important;
     text-align: center;
+    transition: transform 0.2s ease;
+}
+
+[data-testid="stMetric"]:hover {
+    transform: translateY(-2px);
+    border-color: #6366f1 !important;
 }
 
 [data-testid="stMetricValue"] {
-    color: #2563eb !important;
+    color: #818cf8 !important;
     font-weight: 700 !important;
+    font-size: 2.5rem !important;
 }
 
 /* Headers */
 h1, h2, h3 {
-    color: #0f172a !important;
+    color: #f8fafc !important;
+    letter-spacing: -0.02em;
 }
 h1 {
     font-weight: 700 !important;
     margin-bottom: 30px !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 h2 {
     font-weight: 600 !important;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e2e8f0;
-    margin-top: 40px !important;
-    margin-bottom: 20px !important;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #334155;
+    margin-top: 48px !important;
+    margin-bottom: 24px !important;
 }
 
 /* Streamlit Dataframes */
 [data-testid="stDataFrame"] {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #334155;
+    border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Chat Input */
 [data-testid="stChatInput"] {
     border-radius: 12px !important;
-    border: 1px solid #cbd5e1 !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #334155 !important;
+    background-color: #1e2130 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Tooltips and Info boxes */
+.stAlert {
+    border-radius: 8px !important;
+    border: none !important;
 }

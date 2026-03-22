@@ -1,4 +1,4 @@
-# Smart EDA Assistant 📊
+# DataWhisper 📊
 
 A full-stack AI-powered web application built with Streamlit that allows users to upload a CSV file and automatically generates insights, visualizations, and an interactive chat interface for data exploration.
 

@@ -9,7 +9,7 @@ from src.auth import authenticate_user
 import os
 
 # Set page config
-st.set_page_config(page_title="Smart EDA Assistant", layout="wide", page_icon="📊", initial_sidebar_state="expanded")
+st.set_page_config(page_title="DataWhisper", layout="wide", page_icon="📊", initial_sidebar_state="expanded")
 
 def load_css():
     """Loads external CSS for SaaS styling."""
@@ -39,7 +39,7 @@ def main():
     authenticator.logout('Logout', 'sidebar')
     st.sidebar.divider()
     
-    st.sidebar.title("📊 Smart EDA")
+    st.sidebar.title("📊 DataWhisper")
     st.sidebar.markdown("Upload your CSV and get AI insights.")
     
     # API Key Input

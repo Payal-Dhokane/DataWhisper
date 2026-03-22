@@ -1,6 +1,6 @@
-# Smart EDA Assistant 🚀 - Deployment Guide
+# DataWhisper 🚀 - Deployment Guide
 
-This guide covers how to deploy the Smart EDA Assistant to **Streamlit Community Cloud** (the fastest, easiest, and free method for Streamlit applications).
+This guide covers how to deploy DataWhisper to **Streamlit Community Cloud** (the fastest, easiest, and free method for Streamlit applications).
 
 ## Prerequisites
 1. A GitHub account.
