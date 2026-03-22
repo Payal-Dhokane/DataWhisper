@@ -24,8 +24,8 @@ def load_authenticator():
             },
             'cookie': {
                 'expiry_days': 30,
-                'key': 'smart_eda_cookie_key_123',
-                'name': 'smart_eda_cookie'
+                'key': 'smart_eda_cookie_key_123_v2',
+                'name': 'smart_eda_cookie_v2'
             },
             'preauthorized': {
                 'emails': ['admin@smarteda.com']
@@ -50,26 +50,27 @@ def load_authenticator():
 
 def authenticate_user():
     """Handles UI injection for authentication and blocks unauthenticated users."""
+    authenticator, config_path = load_authenticator()
+    
+    try:
+        # Try both signatures safely
+        try:
+            name, authentication_status, username = authenticator.login('main')
+        except TypeError:
+            name, authentication_status, username = authenticator.login('Login', 'main')
+    except Exception as e:
+        st.error(f"Authentication setup error: {str(e)}")
+        return False, None
+            
+    if authentication_status:
+        # User is logged in successfully. We do NOT print the Please Login text.
+        return True, authenticator
+        
+    # User is NOT logged in. Print the instructions.
     st.markdown("<h1 style='text-align: center; color: #2563eb;'>Smart EDA Assistant</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #64748b;'>Please login to access your workspace. <i>(Demo Account: <b>demo</b> / <b>password</b>)</i></p>", unsafe_allow_html=True)
     
-    authenticator, config_path = load_authenticator()
-    
-    # Try different API signatures depending on the streamlit_authenticator version installed
-    try:
-        # 0.3.1+ signature
-        name, authentication_status, username = authenticator.login('main')
-    except TypeError:
-        try:
-            # 0.2.x signature
-            name, authentication_status, username = authenticator.login('Login', 'main')
-        except Exception:
-            st.error("Authentication module version mismatch. Please reinstall.")
-            return False, None
-            
-    if authentication_status:
-        return True, authenticator
-    elif authentication_status == False:
+    if authentication_status == False:
         st.error('Username/password is incorrect')
         return False, None
     elif authentication_status == None:
