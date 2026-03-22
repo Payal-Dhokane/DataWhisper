@@ -1,13 +1,26 @@
 import base64
 from io import BytesIO
+import plotly.io as pio
 
 def _fig_to_base64(fig):
     if fig is None:
         return ""
+    
     buf = BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
-    return f"data:image/png;base64,{data}"
+    try:
+        # Check if it's a Plotly figure
+        if hasattr(fig, "to_image"):
+            # Plotly figure - needs kaleido installed
+            img_bytes = fig.to_image(format="png")
+            data = base64.b64encode(img_bytes).decode("ascii")
+        else:
+            # Matplotlib figure
+            fig.savefig(buf, format="png", bbox_inches="tight")
+            data = base64.b64encode(buf.getbuffer()).decode("ascii")
+        return f"data:image/png;base64,{data}"
+    except Exception as e:
+        print(f"Error converting figure for report: {e}")
+        return ""
 
 def generate_html_report(df_info, stats_df, fig_missing, fig_corr, insights, recommendations):
     html = f"""

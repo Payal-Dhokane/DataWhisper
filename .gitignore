@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints
+.venv/
+venv/
+env/
+ENV/
+.streamlit/secrets.toml
+config.yaml
+# We want to keep config.toml if it's for theme, but if it has secrets, ignore it.
+# Usually .streamlit/config.toml is for theme.
+# streamlit_authenticator config might be in another file. 
+# The src/auth.py uses 'config.yaml'. I'll add that to ignore.
