@@ -184,7 +184,7 @@ def main():
                 cols = st.columns(2)
                 for i, (col_name, fig) in enumerate(all_figs.items()):
                     with cols[i % 2]:
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.pyplot(fig)
                         if st.button(f"Explain {col_name} chart", key=f"btn_{col_name}"):
                             explanation = explain_chart({"type": "Distribution/Count Plot", "columns": col_name})
                             st.write(explanation)
