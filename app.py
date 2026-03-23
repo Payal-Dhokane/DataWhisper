@@ -58,8 +58,13 @@ def main():
     if not is_authenticated:
         return
         
-    # Sidebar
-    authenticator.logout('Logout', 'sidebar')
+    # Sidebar Logout
+    if authenticator:
+        authenticator.logout('Logout', 'sidebar')
+    elif "google_auth" in st.session_state:
+        if st.sidebar.button("Logout"):
+            del st.session_state["google_auth"]
+            st.rerun()
     st.sidebar.divider()
     st.sidebar.title("📊 DataWhisper")
     st.sidebar.markdown("Transform your data into actionable insights.")
