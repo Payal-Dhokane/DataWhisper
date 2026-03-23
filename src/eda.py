@@ -25,7 +25,8 @@ def plot_missing_values(df):
         aspect="auto", 
         color_continuous_scale="Viridis",
         title=f"Missing Values Heatmap {'(Sampled 5000 rows)' if len(df) > 5000 else ''}",
-        labels={"color": "Missing"}
+        labels={"color": "Missing"},
+        template="plotly_dark" # Ensure it matches the theme
     )
     fig.update_layout(height=400)
     return fig
@@ -38,13 +39,18 @@ def plot_correlation_matrix(df):
         return None
     
     corr = numeric_df.corr()
+    
+    # Explicitly use column names for axes to prevent "0,1,2,3" issue
     fig = px.imshow(
         corr, 
         text_auto=".2f", 
         aspect="auto", 
         color_continuous_scale="RdBu_r",
         zmin=-1, zmax=1,
-        title="Correlation Matrix"
+        title="Correlation Matrix",
+        x=corr.columns,
+        y=corr.index,
+        template="plotly_dark"
     )
     fig.update_layout(height=600)
     return fig
@@ -52,9 +58,12 @@ def plot_correlation_matrix(df):
 @st.cache_data(show_spinner="Generating Distributions...")
 def plot_distributions(df, max_plots=5):
     """Plots histograms/distributions for numerical columns."""
-    plots_dict = {} # Renamed and moved to top
+    plots_dict = {}
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     
+    if len(numeric_cols) == 0:
+        return plots_dict
+        
     # Sample for performance if needed
     plot_df = df if len(df) <= 10000 else df.sample(10000)
     
@@ -62,9 +71,9 @@ def plot_distributions(df, max_plots=5):
         fig = px.histogram(
             plot_df, x=col, 
             marginal="box", 
-            hover_data=plot_df.columns,
             title=f"Distribution of {col} {'(Sampled 10k)' if len(df) > 10000 else ''}",
-            color_discrete_sequence=['#818cf8']
+            color_discrete_sequence=['#818cf8'],
+            template="plotly_dark"
         )
         fig.update_layout(height=400, showlegend=False)
         plots_dict[col] = fig
@@ -73,7 +82,7 @@ def plot_distributions(df, max_plots=5):
 @st.cache_data(show_spinner="Generating Categorical Counts...")
 def plot_count_plots(df, max_plots=5, max_categories=20):
     """Plots count plots for categorical columns."""
-    cat_plots_dict = {} # Renamed and moved to top
+    cat_plots_dict = {}
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
     
     for col in cat_cols:
@@ -86,7 +95,8 @@ def plot_count_plots(df, max_plots=5, max_categories=20):
                 counts, x=col, y='count',
                 title=f"Count Plot of {col}",
                 color=col,
-                color_discrete_sequence=px.colors.qualitative.Pastel
+                color_discrete_sequence=px.colors.qualitative.Pastel,
+                template="plotly_dark"
             )
             fig.update_layout(height=400, showlegend=False)
             cat_plots_dict[col] = fig
