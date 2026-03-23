@@ -52,10 +52,11 @@ def plot_correlation_matrix(df):
 @st.cache_data(show_spinner="Generating Distributions...")
 def plot_distributions(df, max_plots=5):
     """Plots histograms/distributions for numerical columns."""
+    plots_dict = {} # Renamed and moved to top
     numeric_cols = df.select_dtypes(include=[np.number]).columns
+    
     # Sample for performance if needed
     plot_df = df if len(df) <= 10000 else df.sample(10000)
-    figs = {}
     
     for col in numeric_cols[:max_plots]:
         fig = px.histogram(
@@ -66,16 +67,17 @@ def plot_distributions(df, max_plots=5):
             color_discrete_sequence=['#818cf8']
         )
         fig.update_layout(height=400, showlegend=False)
-        figs[col] = fig
-    return figs
+        plots_dict[col] = fig
+    return plots_dict
 
 @st.cache_data(show_spinner="Generating Categorical Counts...")
 def plot_count_plots(df, max_plots=5, max_categories=20):
     """Plots count plots for categorical columns."""
+    cat_plots_dict = {} # Renamed and moved to top
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
-    figs = {}
+    
     for col in cat_cols:
-        if len(figs) >= max_plots:
+        if len(cat_plots_dict) >= max_plots:
             break
         if df[col].nunique() <= max_categories:
             counts = df[col].value_counts().reset_index()
@@ -87,5 +89,5 @@ def plot_count_plots(df, max_plots=5, max_categories=20):
                 color_discrete_sequence=px.colors.qualitative.Pastel
             )
             fig.update_layout(height=400, showlegend=False)
-            figs[col] = fig
-    return figs
+            cat_plots_dict[col] = fig
+    return cat_plots_dict
