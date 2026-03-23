@@ -85,7 +85,7 @@ def authenticate_user():
         TOKEN_URL = "https://oauth2.googleapis.com/token"
         REVOKE_URL = "https://oauth2.googleapis.com/revoke"
         
-        oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, REVOKE_URL)
+        oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
         
         result = oauth2.authorize_button(
             name="🚀 Sign in with Google",
