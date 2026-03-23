@@ -55,6 +55,7 @@ def plot_distributions(df, max_plots=5):
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     # Sample for performance if needed
     plot_df = df if len(df) <= 10000 else df.sample(10000)
+    figs = {}
     
     for col in numeric_cols[:max_plots]:
         fig = px.histogram(
