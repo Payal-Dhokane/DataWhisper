@@ -22,7 +22,7 @@ def get_pandas_agent(df):
         llm, 
         df, 
         verbose=True, 
-        agent_type="tool-calling", # Generic tool calling for Llama3
+        agent_type="zero-shot-react-description", # Most robust for Llama with pandas
         allow_dangerous_code=True
     )
     return agent

@@ -8,83 +8,74 @@ import seaborn as sns
 
 @st.cache_data(show_spinner="Analyzing data...")
 def generate_summary_stats(df):
-    """Returns summary statistics."""
+    """Returns summary statistics for the dataframe."""
     return df.describe(include='all').T
 
-@st.cache_data(show_spinner="Generating Plotly Missing Values...")
+@st.cache_data(show_spinner="Generating Missing Values...")
 def plot_missing_values(df):
-    """Heatmap of missing values."""
+    """Plots a heatmap of missing values using Seaborn for 100% reliability."""
     missing_data = df.isnull()
     if missing_data.sum().sum() == 0:
         return None
     
-    # Simple heatmap with explicit labels
-    fig = px.imshow(
-        missing_data.head(500).astype(int), # Cast to int for clearer rendering
-        aspect="auto", 
-        color_continuous_scale="RdBu_r",
-        title="Missing Values Heatmap (Showing Top 500)",
-        labels={"color": "Is Missing?"},
-        template="none" # Remove template for now to debug
-    )
-    fig.update_layout(height=400)
+    # Use Matplotlib/Seaborn for reliability on Streamlit Cloud
+    plt.figure(figsize=(10, 4))
+    sns.heatmap(missing_data.head(1000), cbar=False, yticklabels=False, cmap='viridis')
+    plt.title(f"Missing Values Heatmap {'(First 1000 rows)' if len(df) > 1000 else ''}")
+    plt.tight_layout()
+    fig = plt.gcf()
+    plt.close()
     return fig
 
 @st.cache_data(show_spinner="Generating Correlation Matrix...")
 def plot_correlation_matrix(df):
-    """Correlation matrix."""
+    """Plots a correlation matrix using Seaborn for 100% reliability."""
     numeric_df = df.select_dtypes(include=[np.number])
     if numeric_df.empty or numeric_df.shape[1] < 2:
         return None
     
     corr = numeric_df.corr()
-    fig = px.imshow(
-        corr, 
-        text_auto=".2f", 
-        aspect="auto", 
-        color_continuous_scale="RdBu_r",
-        zmin=-1, zmax=1,
-        title="Correlation Matrix",
-        labels={"color": "Correlation"},
-        template="none"
-    )
-    fig.update_layout(height=600)
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(corr, annot=True, fmt=".2f", cmap='RdBu_r', center=0, square=True)
+    plt.title("Correlation Matrix")
+    plt.tight_layout()
+    fig = plt.gcf()
+    plt.close()
     return fig
 
 @st.cache_data(show_spinner="Generating Distributions...")
 def plot_distributions(df, max_plots=5):
-    """Distributions using Seaborn/Matplotlib as a robust alternative."""
+    """Plots histograms/distributions using Matplotlib/Seaborn."""
+    plots_dict = {}
     numeric_cols = df.select_dtypes(include=[np.number]).columns
-    figs = {}
     
     if len(numeric_cols) == 0:
-        return figs
-
+        return plots_dict
+        
     for col in numeric_cols[:max_plots]:
-        # Use classic matplotlib for reliability
         plt.figure(figsize=(8, 4))
-        sns.histplot(df[col], kde=True, color='#6366f1')
+        sns.histplot(df[col].dropna(), kde=True, color='#818cf8')
         plt.title(f"Distribution of {col}")
         plt.tight_layout()
-        figs[col] = plt.gcf() # Store Figure object
-        plt.close() # Close to free memory
-    return figs
+        plots_dict[col] = plt.gcf()
+        plt.close()
+    return plots_dict
 
 @st.cache_data(show_spinner="Generating Categorical Counts...")
 def plot_count_plots(df, max_plots=5, max_categories=20):
-    """Count plots using Matplotlib for reliability."""
+    """Plots count plots using Matplotlib/Seaborn."""
+    cat_plots_dict = {}
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
-    figs = {}
     
     for col in cat_cols:
-        if len(figs) >= max_plots:
+        if len(cat_plots_dict) >= max_plots:
             break
         if df[col].nunique() <= max_categories:
             plt.figure(figsize=(8, 4))
             sns.countplot(data=df, x=col, palette='viridis')
-            plt.title(f"Count of {col}")
+            plt.title(f"Count Plot of {col}")
             plt.xticks(rotation=45)
             plt.tight_layout()
-            figs[col] = plt.gcf()
+            cat_plots_dict[col] = plt.gcf()
             plt.close()
-    return figs
+    return cat_plots_dict

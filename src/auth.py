@@ -59,17 +59,25 @@ def authenticate_user():
         return False, None
             
     if authentication_status:
-        # User is logged in successfully. We do NOT print the Please Login text.
+        # User is logged in successfully
         return True, authenticator
         
-    # User is NOT logged in. Print the instructions.
+    # User is NOT logged in. Show Login UI.
     st.markdown("<h1 style='text-align: center; color: #818cf8;'>DataWhisper</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #64748b;'>Please login to access your workspace. <i>(Demo Account: <b>demo</b> / <b>password</b>)</i></p>", unsafe_allow_html=True)
+    
+    # Google Login Placeholder
+    st.markdown("---")
+    st.subheader("Login with Google")
+    if st.button("🚀 Sign in with Google", use_container_width=True):
+        st.info("Google OAuth requires Client ID and Secret in Streamlit Secrets. Please refer to the implementation guide.")
+        # In a real scenario, this would redirect to Google OAuth URL
+    st.markdown("---")
+    
+    st.markdown("<p style='text-align: center; color: #64748b;'>Or use your Demo Account: <b>demo</b> / <b>password</b></p>", unsafe_allow_html=True)
     
     if authentication_status == False:
         st.error('Username/password is incorrect')
-        return False, None
-    elif authentication_status == None:
-        return False, None
     
+    # STOP the app for unauthenticated users
+    st.stop()
     return False, None

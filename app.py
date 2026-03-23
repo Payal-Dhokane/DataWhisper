@@ -156,7 +156,7 @@ def main():
             st.subheader("Missing Values")
             fig_missing = plot_missing_values(df)
             if fig_missing:
-                st.plotly_chart(fig_missing, use_container_width=True)
+                st.pyplot(fig_missing)
                 if st.button("Ask AI to explain this chart"):
                     explanation = explain_chart({"type": "Heatmap", "columns": "Missing values across all columns"})
                     st.info(explanation)
@@ -167,7 +167,7 @@ def main():
             st.subheader("Correlation Analysis")
             fig_corr = plot_correlation_matrix(df)
             if fig_corr:
-                st.plotly_chart(fig_corr, use_container_width=True)
+                st.pyplot(fig_corr)
                 if st.button("Explain Correlations"):
                     explanation = explain_chart({"type": "Correlation Matrix", "columns": "Numerical column relationships"})
                     st.info(explanation)
