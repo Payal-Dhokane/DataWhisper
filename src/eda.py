@@ -16,11 +16,15 @@ def plot_missing_values(df):
     if missing_data.sum().sum() == 0:
         return None
     
+    # Sample if dataset is too large to prevent Plotly/Memory issues on Streamlit Cloud
+    if len(df) > 5000:
+        missing_data = missing_data.sample(5000)
+    
     fig = px.imshow(
         missing_data, 
         aspect="auto", 
         color_continuous_scale="Viridis",
-        title="Missing Values Heatmap",
+        title=f"Missing Values Heatmap {'(Sampled 5000 rows)' if len(df) > 5000 else ''}",
         labels={"color": "Missing"}
     )
     fig.update_layout(height=400)
@@ -49,13 +53,15 @@ def plot_correlation_matrix(df):
 def plot_distributions(df, max_plots=5):
     """Plots histograms/distributions for numerical columns."""
     numeric_cols = df.select_dtypes(include=[np.number]).columns
-    figs = {}
+    # Sample for performance if needed
+    plot_df = df if len(df) <= 10000 else df.sample(10000)
+    
     for col in numeric_cols[:max_plots]:
         fig = px.histogram(
-            df, x=col, 
-            marginal="box", # or violin, rug
-            hover_data=df.columns,
-            title=f"Distribution of {col}",
+            plot_df, x=col, 
+            marginal="box", 
+            hover_data=plot_df.columns,
+            title=f"Distribution of {col} {'(Sampled 10k)' if len(df) > 10000 else ''}",
             color_discrete_sequence=['#818cf8']
         )
         fig.update_layout(height=400, showlegend=False)
