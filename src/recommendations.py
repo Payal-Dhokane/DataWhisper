@@ -24,18 +24,17 @@ def generate_recommendations(df_info):
         return "AI temporarily unavailable for recommendations. Check GROQ_API_KEY."
 
     prompt = ChatPromptTemplate.from_template("""
-    You are an expert data science assistant. Based on the following dataset info 
-    (including Data Types and Missing Values), provide actionable recommendations 
-    for data preprocessing (e.g., how to handle missing values, potential feature 
-    engineering, outlier treatment). 
+    You are an expert data science assistant. Based on the following dataset info, 
+    provide 3-5 high-priority actionable recommendations for data preprocessing 
+    (handling missing values, feature engineering, outliers).
+    
+    Rules:
+    - START DIRECTLY with the recommendations. No introductions or 'Introduction to Preprocessing'.
+    - Use clear markdown subheadings for each point.
+    - Be specific (e.g., "Use One-Hot Encoding for column X").
     
     Dataset Info:
     {info}
-    
-    Rules:
-    - Use clear markdown subheadings.
-    - Be specific to the columns listed.
-    - Suggest actual transformations (e.g., "Use One-Hot Encoding for column X").
     """)
     
     chain = prompt | llm

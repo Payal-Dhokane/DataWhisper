@@ -270,7 +270,6 @@ def main():
                 with st.spinner("🔍 Analyzing for recommendations..."):
                     info_str = str(get_dataframe_info(df))
                     st.session_state.recommendations = generate_recommendations(info_str)
-            st.subheader("Actionable Recommendations")
             st.markdown(st.session_state.recommendations)
         
         if st.button("Proceed to Export Report →", type="primary"):
