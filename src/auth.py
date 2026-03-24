@@ -81,8 +81,10 @@ def authenticate_user():
     st.markdown("""
         <style>
         .login-brand-text {
-            color: #A78BFA !important;
-            -webkit-text-fill-color: #A78BFA !important;
+            background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 800 !important;
             letter-spacing: 2px;
             font-size: 4rem !important;
