@@ -23,7 +23,7 @@ def render_insight_card(title, content, icon="💡"):
 
 def render_step_indicator(current_step):
     """Renders a progress indicator for the user flow."""
-    steps = ["Upload", "Analyze", "EDA", "Insights", "Chat"]
+    steps = ["Upload", "Analyze", "EDA", "Insights", "Export"]
     cols = st.columns(len(steps))
     for i, step in enumerate(steps):
         is_active = i <= current_step

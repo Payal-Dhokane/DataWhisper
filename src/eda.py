@@ -14,6 +14,8 @@ def generate_summary_stats(df):
 @st.cache_data(show_spinner="Generating Missing Values...")
 def plot_missing_values(df):
     """Plots a heatmap of missing values using Plotly."""
+    if df.empty:
+        return None
     missing_data = df.isnull().astype(int)
     if missing_data.sum().sum() == 0:
         return None
@@ -33,11 +35,20 @@ def plot_missing_values(df):
 @st.cache_data(show_spinner="Generating Correlation Matrix...")
 def plot_correlation_matrix(df):
     """Plots a correlation matrix using Plotly."""
+    if df.empty:
+        return None
     numeric_df = df.select_dtypes(include=[np.number])
+    # Remove columns that are all NaN or constant (std=0) as they break correlations
+    numeric_df = numeric_df.dropna(axis=1, how='all')
+    numeric_df = numeric_df.loc[:, (numeric_df != numeric_df.iloc[0]).any()] 
+    
     if numeric_df.empty or numeric_df.shape[1] < 2:
         return None
     
     corr = numeric_df.corr()
+    if corr.isnull().values.all():
+        return None
+
     fig = px.imshow(
         corr,
         text_auto=".2f",
@@ -52,9 +63,13 @@ def plot_correlation_matrix(df):
 def plot_distributions(df, max_plots=6):
     """Plots histograms using Plotly."""
     plots_dict = {}
+    if df.empty:
+        return plots_dict
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     
     for col in numeric_cols[:max_plots]:
+        if df[col].dropna().empty:
+            continue
         fig = px.histogram(
             df, x=col, 
             nbins=30, 
@@ -69,11 +84,15 @@ def plot_distributions(df, max_plots=6):
 def plot_count_plots(df, max_plots=6, max_categories=20):
     """Plots count plots using Plotly."""
     cat_plots_dict = {}
+    if df.empty:
+        return cat_plots_dict
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
     
     for col in cat_cols:
         if len(cat_plots_dict) >= max_plots:
             break
+        if df[col].dropna().empty:
+            continue
         if df[col].nunique() <= max_categories:
             counts = df[col].value_counts().reset_index()
             counts.columns = [col, 'count']

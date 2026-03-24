@@ -13,7 +13,7 @@ from src.eda import (
     plot_count_plots
 )
 from src.llm_insights import generate_insights, explain_chart
-from src.chat import get_pandas_agent, query_agent, get_suggested_questions
+from src.llm_insights import generate_insights, explain_chart
 from src.recommendations import generate_recommendations # Keeping it for now
 from src.auth import authenticate_user
 from src.ui_components import render_header, render_insight_card, render_step_indicator, render_info_box, add_custom_css
@@ -43,7 +43,7 @@ def init_session_state():
     if 'df' not in st.session_state:
         st.session_state.df = None
     if 'current_step' not in st.session_state:
-        st.session_state.current_step = 0 # 0: Upload, 1: Analyze, 2: EDA, 3: Insights, 4: Chat
+        st.session_state.current_step = 0 # 0: Upload, 1: Analyze, 2: EDA, 3: Insights, 4: Export
     if 'insights' not in st.session_state:
         st.session_state.insights = None
     if 'messages' not in st.session_state:
@@ -79,10 +79,10 @@ def main():
 
     # Sidebar Navigation - Step-by-Step
     st.sidebar.subheader("Navigation")
-    steps = ["1. Upload Data", "2. Dataset Overview", "3. Visual EDA", "4. AI Insights", "5. Chat with Data", "6. Export Report"]
+    steps = ["1. Upload Data", "2. Dataset Overview", "3. Visual EDA", "4. AI Insights", "5. Export Report"]
     
     # Map steps to st.session_state.current_step
-    app_mode = st.sidebar.radio("Go to:", steps, index=st.session_state.current_step)
+    app_mode = st.sidebar.radio("Go to:", steps, index=min(st.session_state.current_step, len(steps)-1))
     st.session_state.current_step = steps.index(app_mode)
     
     render_step_indicator(st.session_state.current_step)
@@ -229,7 +229,7 @@ def main():
             st.subheader("Actionable Recommendations")
             st.markdown(st.session_state.recommendations)
         
-        if st.button("Start Chatting with Data →", type="primary"):
+        if st.button("Proceed to Export Report →", type="primary"):
             st.session_state.current_step = 4
             st.rerun()
 
