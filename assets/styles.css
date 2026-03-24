@@ -152,6 +152,16 @@ h2 {
     border-color: rgba(124, 58, 237, 0.2);
 }
 
+/* Sidebar Brand Polish */
+[data-testid="stSidebar"] h3 {
+    color: white !important;
+    font-weight: 800 !important;
+    letter-spacing: 1px;
+    margin-top: 20px !important;
+    word-break: break-word;
+    font-size: 1.5rem !important;
+}
+
 /* Info/Success/Warning Boxes */
 .stAlert {
     background-color: rgba(255, 255, 255, 0.03) !important;

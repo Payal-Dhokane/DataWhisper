@@ -72,7 +72,7 @@ def main():
             del st.session_state["google_auth"]
             st.rerun()
     st.sidebar.divider()
-    st.sidebar.title("📊 DataWhisper")
+    st.sidebar.markdown("### 💜 DataWhisper")
     st.sidebar.markdown("Transform your data into actionable insights.")
     
     # Check for API Key
