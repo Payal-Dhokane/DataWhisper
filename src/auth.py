@@ -56,7 +56,7 @@ def load_authenticator():
         config['cookie']['expiry_days'],
         config['preauthorized']
     )
-    return authenticator, config_path
+    return authenticator, config, config_path
 
 def authenticate_user():
     """Handles UI injection for authentication and blocks unauthenticated users."""
@@ -65,7 +65,7 @@ def authenticate_user():
     if "google_auth" in st.session_state:
         return True, None
 
-    authenticator, config_path = load_authenticator()
+    authenticator, config, config_path = load_authenticator()
     
     # Login/Register Selection
     auth_choice = st.selectbox("Login or Register", ["Login", "Register"], label_visibility="collapsed")
@@ -115,9 +115,10 @@ def authenticate_user():
         try:
             if authenticator.register_user('Register User', preauthorization=False):
                 st.success('User registered successfully! You can now login.')
-                # Save the new user to config.yaml
+                # Save the new user to config.yaml by syncing config with credentials
+                config['credentials'] = authenticator.credentials
                 with open(config_path, 'w') as file:
-                    yaml.dump(authenticator.config, file, default_flow_style=False)
+                    yaml.dump(config, file, default_flow_style=False)
         except Exception as e:
             st.error(f"Registration error: {str(e)}")
 
