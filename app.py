@@ -233,38 +233,8 @@ def main():
             st.session_state.current_step = 4
             st.rerun()
 
-    # 5. Chat with Data
+    # 5. Export Report
     elif st.session_state.current_step == 4:
-        render_header("Chat with Data", "Ask natural language questions about your dataset.", "💬")
-        
-        # Suggested questions
-        cols = st.columns(4)
-        suggestions = get_suggested_questions()
-        for i, ques in enumerate(suggestions):
-            if cols[i].button(ques, use_container_width=True):
-                st.session_state.messages.append({"role": "user", "content": ques})
-                # Trigger agent execution...
-                
-        # Chat Interface
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-                
-        if prompt := st.chat_input("Ex: What is the average age of passengers who survived?"):
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"):
-                st.markdown(prompt)
-                
-            agent = get_pandas_agent(df)
-            with st.chat_message("assistant"):
-                with st.spinner("Analyzing..."):
-                    info = str(get_dataframe_info(df))
-                    response = query_agent(agent, prompt, df_context=info)
-                    st.markdown(response)
-            st.session_state.messages.append({"role": "assistant", "content": response})
-
-    # 6. Export Report
-    elif st.session_state.current_step == 5:
         render_header("Export Report", "Download your analysis as a document.", "📄")
         st.info("Download a comprehensive report containing your dataset info, summary, and AI insights.")
         
