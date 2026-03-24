@@ -74,19 +74,21 @@ def authenticate_user():
     # --- BELOW ONLY SHOWS IF NOT AUTHENTICATED ---
     
     # Main App branding
-    st.markdown("<div style='text-align: center;'><h2 class='login-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center;'><div class='login-brand-text'>DataWhisper</div></div>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; opacity: 0.8; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
         <style>
-        .login-brand {
+        .login-brand-text {
             color: #A78BFA !important;
+            -webkit-text-fill-color: #A78BFA !important;
             font-weight: 800 !important;
             letter-spacing: 2px;
-            font-size: 3.5rem !important;
-            margin-bottom: 0 !important;
+            font-size: 4rem !important;
+            margin-bottom: 10px !important;
             display: inline-block;
+            font-family: 'Source Sans Pro', sans-serif;
         }
         
         /* Glass Login Container */
@@ -114,19 +116,21 @@ def authenticate_user():
             flex-direction: row !important;
             justify-content: center !important;
             gap: 20px !important;
-            margin-bottom: 1.5rem !important;
+            margin-bottom: 2rem !important;
         }
         
         div[data-testid="stRadio"] label {
             background-color: rgba(124, 58, 237, 0.1) !important;
-            padding: 10px 25px !important;
+            padding: 12px 30px !important;
             border-radius: 12px !important;
             border: 1px solid rgba(124, 58, 237, 0.2) !important;
             transition: all 0.3s ease !important;
+            color: white !important;
         }
         
         div[data-testid="stRadio"] label:hover {
             border-color: #A78BFA !important;
+            background-color: rgba(124, 58, 237, 0.2) !important;
         }
         
         /* Submit Button Styling */
