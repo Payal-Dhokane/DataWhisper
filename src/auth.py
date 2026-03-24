@@ -74,31 +74,34 @@ def authenticate_user():
     # --- BELOW ONLY SHOWS IF NOT AUTHENTICATED ---
     
     # Main App branding
-    st.markdown("<div style='text-align: center;'><h1 class='login-header'>DataWhisper</h1></div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center;'><h2 class='sidebar-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.8;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
         <style>
-        .login-header {
+        .sidebar-brand {
             background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800 !important;
-            font-size: 4rem !important;
+            letter-spacing: 1.5px;
+            font-size: 3rem !important;
             margin-bottom: 0 !important;
             display: inline-block;
+            text-transform: none;
         }
         
         /* Glass Login Container */
-        .stForm, div[data-testid="stVerticalBlock"] > div:has(div.stSelectbox) {
+        div[data-testid="stVerticalBlock"] > div:has(div.stSelectbox), .stForm {
             background: rgba(30, 30, 46, 0.45) !important;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             border-radius: 20px !important;
-            padding: 1.5rem !important;
+            padding: 2rem !important;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+            width: 100% !important;
         }
         
         /* Input fields in login */
@@ -107,47 +110,44 @@ def authenticate_user():
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: white !important;
             border-radius: 12px !important;
-            padding: 10px !important;
-        }
-        
-        /* Selectbox (Action strip) fix */
-        div[data-testid="stSelectbox"] {
-            margin-bottom: 1rem !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # 1. Google OAuth Section 
-    CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
-    CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-    REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
+    # Use columns to center and constrain the width
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col2:
+        # 1. Google OAuth Section 
+        CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
+        CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
+        REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
 
-    if CLIENT_ID and CLIENT_SECRET:
-        try:
-            AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-            TOKEN_URL = "https://oauth2.googleapis.com/token"
-            oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
+        if CLIENT_ID and CLIENT_SECRET:
+            try:
+                AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+                TOKEN_URL = "https://oauth2.googleapis.com/token"
+                oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
+                
+                result = oauth2.authorize_button(
+                    name="🚀 Sign in with Google",
+                    scope="openid email profile",
+                    redirect_uri=REDIRECT_URI,
+                    use_container_width=True,
+                    key="google_login_v3"
+                )
+                
+                if result:
+                    st.session_state["google_auth"] = result
+                    st.rerun()
+            except Exception as e:
+                st.error(f"Google Login error: {e}")
             
-            result = oauth2.authorize_button(
-                name="🚀 Sign in with Google",
-                scope="openid email profile",
-                redirect_uri=REDIRECT_URI,
-                use_container_width=True,
-                key="google_login_v3"
-            )
-            
-            if result:
-                st.session_state["google_auth"] = result
-                st.rerun()
-        except Exception as e:
-            st.error(f"Google Login error: {e}")
-        
-        st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
-    else:
-        st.warning("⚠️ **Google Login Setup Required**: Please add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to your Streamlit Secrets to enable this feature.")
+            st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ **Google Login Setup Required**: Please add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to your Streamlit Secrets to enable this feature.")
 
-    # 2. Login/Register UI
-    with st.container():
+        # 2. Login/Register UI
         auth_choice = st.selectbox("Action", ["Login", "Register"], label_visibility="collapsed")
         
         if auth_choice == "Login":
