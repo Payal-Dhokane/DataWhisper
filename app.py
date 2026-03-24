@@ -139,7 +139,8 @@ def main():
     # NEW FEATURE: Display Auto Summary at the top if available
     if st.session_state.auto_summary and st.session_state.current_step > 0:
         with st.expander("✨ AI Executive Summary", expanded=True):
-            st.info(st.session_state.auto_summary)
+            from src.ui_components import render_insight_card
+            render_insight_card("Auto Summary", st.session_state.auto_summary, icon="✨")
         st.markdown("---")
 
     # 2. Dataset Overview
@@ -217,7 +218,8 @@ def main():
                                 # Smarter context
                                 context = f"Column: {col_name}, Type: {info['dtypes'].get(col_name)}"
                                 explanation = explain_chart({"type": "Distribution/Count Plot", "columns": col_name}, data_context=context)
-                                st.write(explanation)
+                                from src.ui_components import render_insight_card
+                                render_insight_card(f"Analysis: {col_name}", explanation, icon="🧠")
             else:
                 st.info("No visualizations could be generated.")
 
