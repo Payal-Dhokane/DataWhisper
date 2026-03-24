@@ -75,7 +75,7 @@ def authenticate_user():
     
     # Main App branding
     st.markdown("<div style='text-align: center;'><div class='login-brand-text'>DataWhisper</div></div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; opacity: 0.8; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1rem; margin-bottom: 2.5rem; opacity: 0.7; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
@@ -86,11 +86,11 @@ def authenticate_user():
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800 !important;
-            letter-spacing: 2px;
-            font-size: 4rem !important;
-            margin-bottom: 10px !important;
+            letter-spacing: 1.5px;
+            font-size: 2.2rem !important;
+            margin-bottom: 5px !important;
             display: inline-block;
-            font-family: 'Source Sans Pro', sans-serif;
+            word-break: break-word;
         }
         
         /* Glass Login Container */
@@ -98,7 +98,7 @@ def authenticate_user():
             background: rgba(30, 30, 46, 0.45) !important;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 24px !important;
+            border-radius: 20px !important;
             padding: 2.5rem !important;
             box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5) !important;
             width: 100% !important;
@@ -117,22 +117,23 @@ def authenticate_user():
         div[data-testid="stRadio"] > div {
             flex-direction: row !important;
             justify-content: center !important;
-            gap: 20px !important;
+            gap: 15px !important;
             margin-bottom: 2rem !important;
         }
         
         div[data-testid="stRadio"] label {
-            background-color: rgba(124, 58, 237, 0.1) !important;
-            padding: 12px 30px !important;
-            border-radius: 12px !important;
-            border: 1px solid rgba(124, 58, 237, 0.2) !important;
+            background-color: rgba(124, 58, 237, 0.08) !important;
+            padding: 8px 24px !important;
+            border-radius: 10px !important;
+            border: 1px solid rgba(124, 58, 237, 0.15) !important;
             transition: all 0.3s ease !important;
             color: white !important;
+            font-size: 0.9rem !important;
         }
         
         div[data-testid="stRadio"] label:hover {
             border-color: #A78BFA !important;
-            background-color: rgba(124, 58, 237, 0.2) !important;
+            background-color: rgba(124, 58, 237, 0.15) !important;
         }
         
         /* Submit Button Styling */
