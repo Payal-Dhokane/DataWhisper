@@ -154,12 +154,15 @@ h2 {
 
 /* Sidebar Brand Polish */
 [data-testid="stSidebar"] h3 {
-    color: white !important;
+    background: linear-gradient(to right, #ffffff, var(--secondary-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: 800 !important;
     letter-spacing: 1px;
     margin-top: 20px !important;
     word-break: break-word;
-    font-size: 1.5rem !important;
+    font-size: 1.8rem !important;
 }
 
 /* Info/Success/Warning Boxes */
