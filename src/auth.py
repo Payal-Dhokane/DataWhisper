@@ -74,13 +74,13 @@ def authenticate_user():
     # --- BELOW ONLY SHOWS IF NOT AUTHENTICATED ---
     
     # Main App branding
-    st.markdown("<div style='text-align: center;'><h2 class='sidebar-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center;'><h2 class='login-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.8;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
         <style>
-        .sidebar-brand {
+        .login-brand {
             background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
             -webkit-background-clip: text;
             background-clip: text;
@@ -111,6 +111,25 @@ def authenticate_user():
             color: white !important;
             border-radius: 12px !important;
         }
+        
+        /* Fix the Login Button Styling */
+        button[kind="secondaryFormSubmit"], button[kind="primaryFormSubmit"] {
+            background: linear-gradient(135deg, #7C3AED 0%, #C026D3 100%) !important;
+            color: white !important;
+            border-radius: 12px !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+            padding: 0.6rem 2rem !important;
+            font-weight: 700 !important;
+            width: 100% !important;
+            margin-top: 1rem !important;
+        }
+        
+        button[kind="secondaryFormSubmit"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6) !important;
+            filter: brightness(1.1);
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -118,35 +137,6 @@ def authenticate_user():
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        # 1. Google OAuth Section 
-        CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
-        CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-        REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
-
-        if CLIENT_ID and CLIENT_SECRET:
-            try:
-                AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-                TOKEN_URL = "https://oauth2.googleapis.com/token"
-                oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
-                
-                result = oauth2.authorize_button(
-                    name="🚀 Sign in with Google",
-                    scope="openid email profile",
-                    redirect_uri=REDIRECT_URI,
-                    use_container_width=True,
-                    key="google_login_v3"
-                )
-                
-                if result:
-                    st.session_state["google_auth"] = result
-                    st.rerun()
-            except Exception as e:
-                st.error(f"Google Login error: {e}")
-            
-            st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
-        else:
-            st.warning("⚠️ **Google Login Setup Required**: Please add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to your Streamlit Secrets to enable this feature.")
-
         # 2. Login/Register UI
         auth_choice = st.selectbox("Action", ["Login", "Register"], label_visibility="collapsed")
         
