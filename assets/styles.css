@@ -1,8 +1,22 @@
-/* DataWhisper SaaS UI Polish */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* DataWhisper Modern Glassmorphism UI */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --glass-bg: rgba(30, 30, 46, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --primary-purple: #7C3AED;
+    --secondary-purple: #A78BFA;
+    --text-main: #E5E7EB;
+    --bg-dark: #0E1117;
+}
 
 * {
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Outfit', sans-serif !important;
+}
+
+/* Background setup */
+.stApp {
+    background-color: var(--bg-dark);
 }
 
 /* Hide default streamlit elements */
@@ -10,132 +24,139 @@
 footer {visibility: hidden;}
 header {visibility: hidden;}
 
-/* Custom Scrollbar for sleekness */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #0f111a; 
+    background: var(--bg-dark); 
 }
 ::-webkit-scrollbar-thumb {
-    background: #334155; 
-    border-radius: 4px;
+    background: rgba(124, 58, 237, 0.3); 
+    border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #475569; 
+    background: var(--primary-purple); 
 }
 
-/* Better buttons */
-button[kind="primary"] {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
-    color: white !important;
-    border-radius: 8px !important;
-    border: none !important;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4) !important;
-    padding: 10px 24px !important;
-    font-weight: 500 !important;
+/* Sidebar Glass Effect */
+[data-testid="stSidebar"] {
+    background-color: rgba(15, 17, 26, 0.8) !important;
+    backdrop-filter: blur(15px);
+    border-right: 1px solid var(--glass-border);
+}
+
+/* Glass Cards for Metrics */
+[data-testid="stMetric"] {
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    padding: 24px !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
     transition: all 0.3s ease !important;
 }
 
+[data-testid="stMetric"]:hover {
+    transform: translateY(-5px);
+    border-color: rgba(124, 58, 237, 0.5) !important;
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.2) !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: var(--secondary-purple) !important;
+    font-weight: 700 !important;
+}
+
+/* Standard Glass Containers (DataFrames, Tabs, etc.) */
+[data-testid="stDataFrame"], .stTabs, .stExpander {
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 16px !important;
+    border: 1px solid var(--glass-border) !important;
+    padding: 10px;
+}
+
+/* Glass Buttons */
+button[kind="primary"] {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, #4f46e5 100%) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+    padding: 0.6rem 2rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 button[kind="primary"]:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6) !important;
+    transform: scale(1.02);
+    box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6) !important;
+    filter: brightness(1.1);
 }
 
 button[kind="secondary"] {
-    border-radius: 8px !important;
-    border: 1px solid #334155 !important;
-    background-color: #1e2130 !important;
-    padding: 10px 24px !important;
-    font-weight: 500 !important;
-    color: #f8fafc !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 12px !important;
+    color: var(--text-main) !important;
     transition: all 0.2s ease !important;
 }
 
 button[kind="secondary"]:hover {
-    background-color: #334155 !important;
-    border-color: #475569 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--secondary-purple) !important;
 }
 
-/* Sidebar Navigation Items */
-.stRadio > div {
-    gap: 12px;
-}
-.stRadio label {
-    background-color: transparent;
-    padding: 12px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-}
-.stRadio label:hover {
-    background-color: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-}
-
-/* Metric Cards */
-[data-testid="stMetric"] {
-    background-color: #1e2130 !important;
-    border-radius: 12px !important;
-    padding: 24px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
-    border: 1px solid #334155 !important;
-    text-align: center;
-    transition: transform 0.2s ease;
-}
-
-[data-testid="stMetric"]:hover {
-    transform: translateY(-2px);
-    border-color: #6366f1 !important;
-}
-
-[data-testid="stMetricValue"] {
-    color: #818cf8 !important;
+/* Headers & Text Style */
+h1, h2, h3, h4 {
+    color: var(--text-main) !important;
     font-weight: 700 !important;
-    font-size: 2.5rem !important;
 }
 
-/* Headers */
-h1, h2, h3 {
-    color: #f8fafc !important;
-    letter-spacing: -0.02em;
-}
 h1 {
-    font-weight: 700 !important;
-    margin-bottom: 30px !important;
-    background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+    background: linear-gradient(to right, #ffffff, var(--secondary-purple));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-size: 3rem !important;
+    margin-bottom: 40px !important;
 }
+
 h2 {
-    font-weight: 600 !important;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #334155;
-    margin-top: 48px !important;
-    margin-bottom: 24px !important;
+    color: var(--secondary-purple) !important;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 10px;
 }
 
-/* Streamlit Dataframes */
-[data-testid="stDataFrame"] {
-    border: 1px solid #334155;
+/* AI Insights Section Glow */
+.ai-highlight {
+    border: 1px solid rgba(124, 58, 237, 0.4) !important;
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Radio buttons (Navigation) */
+.stRadio label {
+    background-color: rgba(255, 255, 255, 0.03);
+    margin-bottom: 8px;
+    padding: 10px 15px;
     border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
 }
 
-/* Chat Input */
-[data-testid="stChatInput"] {
-    border-radius: 12px !important;
-    border: 1px solid #334155 !important;
-    background-color: #1e2130 !important;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+.stRadio label:hover {
+    background-color: rgba(124, 58, 237, 0.1);
+    border-color: rgba(124, 58, 237, 0.2);
 }
 
-/* Tooltips and Info boxes */
+/* Info/Success/Warning Boxes */
 .stAlert {
-    border-radius: 8px !important;
-    border: none !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 12px !important;
+    color: var(--text-main) !important;
 }

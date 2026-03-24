@@ -11,11 +11,11 @@ def render_header(title, subtitle=None, icon=None):
     st.divider()
 
 def render_insight_card(title, content, icon="💡"):
-    """Renders an insight or recommendation in a card-like format."""
+    """Renders an insight or recommendation in a glass card format."""
     st.markdown(f"""
-    <div style="background-color: #1e2130; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px;">
-        <h4 style="margin-top: 0; color: #818cf8;">{icon} {title}</h4>
-        <div style="color: #cbd5e1; font-size: 0.95rem;">
+    <div style="background: rgba(30, 30, 46, 0.6); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
+        <h4 style="margin-top: 0; color: #A78BFA; font-weight: 700;">{icon} {title}</h4>
+        <div style="color: #E5E7EB; font-size: 1rem; line-height: 1.6;">
             {content}
         </div>
     </div>
@@ -27,13 +27,13 @@ def render_step_indicator(current_step):
     cols = st.columns(len(steps))
     for i, step in enumerate(steps):
         is_active = i <= current_step
-        color = "#6366f1" if is_active else "#334155"
-        text_color = "#f8fafc" if is_active else "#94a3b8"
+        color = "#7C3AED" if is_active else "rgba(255,255,255,0.1)"
+        text_color = "#ffffff" if is_active else "#94a3b8"
         with cols[i]:
             st.markdown(f"""
             <div style="text-align: center;">
-                <div style="height: 4px; background-color: {color}; margin-bottom: 8px; border-radius: 2px;"></div>
-                <span style="color: {text_color}; font-weight: {'600' if is_active else '400'}; font-size: 0.8rem;">{i+1}. {step}</span>
+                <div style="height: 4px; background-color: {color}; margin-bottom: 8px; border-radius: 10px; box-shadow: {'0 0 10px #7C3AED' if is_active else 'none'};"></div>
+                <span style="color: {text_color}; font-weight: {'700' if is_active else '400'}; font-size: 0.85rem;">{i+1}. {step}</span>
             </div>
             """, unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -54,18 +54,26 @@ def add_custom_css():
     st.markdown("""
     <style>
     .insight-card {
-        background-color: #1e2130;
+        background: rgba(30, 30, 46, 0.6);
+        backdrop-filter: blur(10px);
         padding: 24px;
         border-radius: 16px;
-        border: 1px solid #334155;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        margin-bottom: 1.5rem;
     }
     .insight-title {
-        color: #818cf8;
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
+        color: #A78BFA;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+    /* Section Separation */
+    hr {
+        border: 0;
+        height: 1px;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+        margin: 2rem 0;
     }
     </style>
     """, unsafe_allow_html=True)
