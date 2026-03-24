@@ -96,7 +96,12 @@ def authenticate_user():
             
             CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
             CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-            REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
+            # Try to detect redirect URI if not in secrets
+            REDIRECT_URI = st.secrets.get("REDIRECT_URI")
+            if not REDIRECT_URI:
+                # Fallback for Streamlit Cloud
+                REDIRECT_URI = "https://datawhisper.streamlit.app"
+                st.info(f"ℹ️ Ensure your Redirect URI is set to `{REDIRECT_URI}` in Google Console.")
 
             if CLIENT_ID and CLIENT_SECRET:
                 AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -104,27 +109,13 @@ def authenticate_user():
                 
                 oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
                 
-                # Custom CSS to ensure button looks good even if component styles fail
-                st.markdown("""
-                <style>
-                div[data-testid="stMarkdownContainer"] button {
-                    background-color: #4285F4 !important;
-                    color: white !important;
-                    border: none !important;
-                    padding: 10px 20px !important;
-                    border-radius: 4px !important;
-                    font-weight: 500 !important;
-                    width: 100% !important;
-                    cursor: pointer !important;
-                }
-                </style>
-                """, unsafe_allow_html=True)
-
+                # Render button with a distinct key and clear name
                 result = oauth2.authorize_button(
-                    name="Sign in with Google",
+                    name="🚀 Sign in with Google",
                     scope="openid email profile",
                     redirect_uri=REDIRECT_URI,
-                    use_container_width=True
+                    use_container_width=True,
+                    key="google_login_btn" # Added key for stability
                 )
                 
                 if result:

@@ -254,7 +254,7 @@ def main():
                     None, # fig_missing - need to handle plotly
                     None, # fig_corr - need to handle plotly
                     st.session_state.get('insights', 'No insights generated.'), 
-                    "" # recommendations
+                    st.session_state.get('recommendations', 'No recommendations generated.')
                 )
                 
                 st.download_button(
