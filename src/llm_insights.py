@@ -61,26 +61,66 @@ def generate_insights(df_summary, column_names, dtypes, missing_values, correlat
     except Exception as e:
         return f"AI Error: {str(e)}"
 
-def explain_chart(chart_info):
-    """Generates a simple explanation for a given chart's metadata."""
+# NEW FEATURE
+def generate_auto_summary(df_info):
+    """Automatically generates 3-5 key insights for the dataset overview."""
     llm = get_llm()
     if not llm:
-        return "AI unavailable for chart explanation."
+        return None
 
     prompt = ChatPromptTemplate.from_template("""
-    You are an AI data assistant. Explain this chart to a user in simple terms.
+    You are a professional data analyst. 
+    Quickly summarize this dataset in 3-5 bullet points.
+    Focus on:
+    - Overall size and complexity
+    - Immediate data quality issues (missing values)
+    - Interesting high-level patterns
     
-    Chart Metadata:
-    - Type: {chart_type}
-    - Columns: {columns}
+    Dataset Info:
+    {df_info}
     
-    Example output: "This histogram shows right-skewed distribution of Income..."
-    Keep it to 2-3 sentences max.
+    Format: Bullet points only. Max 5 points.
     """)
 
     chain = prompt | llm
     try:
-        response = chain.invoke({"chart_type": chart_info['type'], "columns": chart_info['columns']})
+        response = chain.invoke({"df_info": str(df_info)})
+        return response.content
+    except Exception:
+        return None
+
+# IMPROVED FEATURE
+def explain_chart(chart_info, data_context=None):
+    """Generates a smarter explanation for a chart using optional data context."""
+    llm = get_llm()
+    if not llm:
+        return "AI unavailable for chart explanation."
+
+    context_str = f"\nData Context: {data_context}" if data_context else ""
+    
+    prompt = ChatPromptTemplate.from_template("""
+    You are an AI data assistant. Explain this chart to a user using the provided metadata and data context.
+    
+    Chart Info:
+    - Type: {chart_type}
+    - Columns: {columns}
+    {context_str}
+    
+    Task: 
+    - Describe the visual (e.g., "This histogram shows...")
+    - Include specific data points from the context (e.g., "The highest category is X with value Y")
+    - Mention any obvious patterns or skewness.
+    
+    Keep it to 3-4 sentences max. Avoid generic buzzwords.
+    """)
+
+    chain = prompt | llm
+    try:
+        response = chain.invoke({
+            "chart_type": chart_info['type'], 
+            "columns": chart_info['columns'],
+            "context_str": context_str
+        })
         return response.content
     except Exception as e:
         return f"Could not explain chart: {str(e)}"
