@@ -8,23 +8,10 @@ def _fig_to_base64(fig):
     
     buf = BytesIO()
     try:
-        # Check if it's a Plotly figure
-        if hasattr(fig, "to_image"):
-            try:
-                # Plotly figure - needs kaleido installed
-                img_bytes = fig.to_image(format="png", engine="kaleido")
-                data = base64.b64encode(img_bytes).decode("ascii")
-                return f"data:image/png;base64,{data}"
-            except Exception as e:
-                # If kaleido fails, try to return an interactive HTML div if possible?
-                # For simplicity in PDF-like HTML, we just log and return empty
-                print(f"Kaleido failure: {e}")
-                return ""
-        else:
-            # Matplotlib figure
-            fig.savefig(buf, format="png", bbox_inches="tight")
-            data = base64.b64encode(buf.getbuffer()).decode("ascii")
-            return f"data:image/png;base64,{data}"
+        # Standard Matplotlib figure export
+        fig.savefig(buf, format="png", bbox_inches="tight")
+        data = base64.b64encode(buf.getbuffer()).decode("ascii")
+        return f"data:image/png;base64,{data}"
     except Exception as e:
         print(f"Error converting figure for report: {e}")
         return ""

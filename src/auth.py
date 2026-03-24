@@ -91,39 +91,6 @@ def authenticate_user():
             if st.session_state.get('authentication_status'):
                 st.rerun() # Rerun to hide the login UI immediately
             
-            # Google OAuth Section (Only show on Login page)
-            st.markdown("<div style='text-align: center; margin: 1.5rem 0;'>or</div>", unsafe_allow_html=True)
-            
-            CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
-            CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-            # Try to detect redirect URI if not in secrets
-            REDIRECT_URI = st.secrets.get("REDIRECT_URI")
-            if not REDIRECT_URI:
-                # Fallback for Streamlit Cloud
-                REDIRECT_URI = "https://datawhisper.streamlit.app"
-                st.info(f"ℹ️ Ensure your Redirect URI is set to `{REDIRECT_URI}` in Google Console.")
-
-            if CLIENT_ID and CLIENT_SECRET:
-                AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-                TOKEN_URL = "https://oauth2.googleapis.com/token"
-                
-                oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
-                
-                # Render button with a distinct key and clear name
-                result = oauth2.authorize_button(
-                    name="🚀 Sign in with Google",
-                    scope="openid email profile",
-                    redirect_uri=REDIRECT_URI,
-                    use_container_width=True,
-                    key="google_login_btn" # Added key for stability
-                )
-                
-                if result:
-                    st.session_state["google_auth"] = result
-                    st.rerun()
-            else:
-                st.info("💡 Tip: Use local accounts if Google Login is not configured.")
-
             if st.session_state.get('authentication_status') == False:
                 st.error('Username/password is incorrect')
                 
@@ -137,6 +104,33 @@ def authenticate_user():
                         yaml.dump(config, file, default_flow_style=False)
             except Exception as e:
                 st.error(f"Registration error: {str(e)}")
+
+    # 3. Google OAuth Section (Always visible on login page)
+    st.markdown("<div style='text-align: center; margin: 1.5rem 0;'>&mdash; or &mdash;</div>", unsafe_allow_html=True)
+    
+    CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
+    CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
+    REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
+
+    if CLIENT_ID and CLIENT_SECRET:
+        AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+        TOKEN_URL = "https://oauth2.googleapis.com/token"
+        
+        oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
+        
+        result = oauth2.authorize_button(
+            name="🚀 Sign in with Google",
+            scope="openid email profile",
+            redirect_uri=REDIRECT_URI,
+            use_container_width=True,
+            key="google_login_btn_final"
+        )
+        
+        if result:
+            st.session_state["google_auth"] = result
+            st.rerun()
+    else:
+        st.info("💡 Tip: Use local accounts if Google Login credentials are not set in st.secrets.")
 
     # Stop execution for non-logged in users
     st.stop()
