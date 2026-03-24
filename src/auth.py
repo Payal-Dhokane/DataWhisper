@@ -75,26 +75,22 @@ def authenticate_user():
     
     # Main App branding
     st.markdown("<div style='text-align: center;'><h2 class='login-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; opacity: 0.7; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; opacity: 0.8; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
         <style>
         .login-brand {
-            background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #A78BFA !important;
             font-weight: 800 !important;
             letter-spacing: 2px;
             font-size: 3.5rem !important;
             margin-bottom: 0 !important;
             display: inline-block;
-            text-transform: none;
         }
         
         /* Glass Login Container */
-        div[data-testid="stVerticalBlock"] > div:has(div.stSelectbox), .stForm {
+        div[data-testid="stVerticalBlock"] > div:has(div.stRadio), .stForm {
             background: rgba(30, 30, 46, 0.45) !important;
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -113,10 +109,24 @@ def authenticate_user():
             height: 45px !important;
         }
         
-        /* Fix Selectbox width / cutoff */
-        div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+        /* Radio Button Styling (Navigation Toggle) */
+        div[data-testid="stRadio"] > div {
+            flex-direction: row !important;
+            justify-content: center !important;
+            gap: 20px !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        div[data-testid="stRadio"] label {
+            background-color: rgba(124, 58, 237, 0.1) !important;
+            padding: 10px 25px !important;
             border-radius: 12px !important;
-            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(124, 58, 237, 0.2) !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        div[data-testid="stRadio"] label:hover {
+            border-color: #A78BFA !important;
         }
         
         /* Submit Button Styling */
@@ -129,9 +139,8 @@ def authenticate_user():
             padding: 0.8rem 2rem !important;
             font-weight: 700 !important;
             width: 100% !important;
-            margin-top: 1.5rem !important;
+            margin-top: 1rem !important;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -140,8 +149,8 @@ def authenticate_user():
     col1, col2, col3 = st.columns([1, 2, 1])
     
     with col2:
-        # 2. Login/Register UI
-        auth_choice = st.selectbox("Action", ["Login", "Register"], label_visibility="collapsed")
+        # 2. Login/Register UI (Using Radio for better "button" feel)
+        auth_choice = st.radio("Action", ["Login", "Register"], label_visibility="collapsed", horizontal=True)
         
         if auth_choice == "Login":
             try:
