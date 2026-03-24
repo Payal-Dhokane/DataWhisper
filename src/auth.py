@@ -74,8 +74,34 @@ def authenticate_user():
     # --- BELOW ONLY SHOWS IF NOT AUTHENTICATED ---
     
     # Main App branding
-    st.markdown("<h1 style='text-align: center; color: #818cf8; margin-bottom: 0;'>DataWhisper</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 2rem;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; margin-bottom: 0;'>DataWhisper</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.2rem; margin-bottom: 2.5rem; opacity: 0.8;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+
+    # Injecting specific CSS for login page elements
+    st.markdown("""
+        <style>
+        /* Glass Login Container */
+        .stForm, div[data-testid="stVerticalBlock"] > div:has(div.stSelectbox) {
+            background: rgba(30, 30, 46, 0.45) !important;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px !important;
+            padding: 2rem !important;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+        }
+        
+        /* Input fields in login */
+        input {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border-radius: 10px !important;
+        }
+        
+        /* Center text */
+        .centered-text { text-align: center; color: #A78BFA; font-weight: 500; }
+        </style>
+    """, unsafe_allow_html=True)
 
     # 1. Google OAuth Section (Prominent at the top)
     CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
@@ -102,7 +128,7 @@ def authenticate_user():
         except Exception as e:
             st.error(f"Google Login error: {e}")
         
-        st.markdown("<div style='text-align: center; margin: 1rem 0; color: #64748b;'>&mdash; or use local account &mdash;</div>", unsafe_allow_html=True)
+        st.markdown("<div class='centered-text' style='margin: 1.5rem 0;'>&mdash; or use local account &mdash;</div>", unsafe_allow_html=True)
     else:
         st.warning("⚠️ **Google Login Setup Required**: Please add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to your Streamlit Secrets to enable this feature.")
 
