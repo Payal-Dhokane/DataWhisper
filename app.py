@@ -60,7 +60,10 @@ def main():
         
     # Sidebar Logout
     if authenticator:
-        authenticator.logout('Logout', 'sidebar')
+        try:
+            authenticator.logout('Logout', 'sidebar')
+        except KeyError:
+            pass # Handle cookie manager issues gracefully
     elif "google_auth" in st.session_state:
         if st.sidebar.button("Logout"):
             del st.session_state["google_auth"]
