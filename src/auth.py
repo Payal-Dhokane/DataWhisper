@@ -77,7 +77,36 @@ def authenticate_user():
     st.markdown("<h1 style='text-align: center; color: #818cf8; margin-bottom: 0;'>DataWhisper</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 2rem;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
-    # Login/Register UI in a clean container
+    # 1. Google OAuth Section (Prominent at the top)
+    CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
+    CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
+    REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
+
+    if CLIENT_ID and CLIENT_SECRET:
+        try:
+            AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+            TOKEN_URL = "https://oauth2.googleapis.com/token"
+            oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
+            
+            result = oauth2.authorize_button(
+                name="🚀 Sign in with Google",
+                scope="openid email profile",
+                redirect_uri=REDIRECT_URI,
+                use_container_width=True,
+                key="google_login_v3"
+            )
+            
+            if result:
+                st.session_state["google_auth"] = result
+                st.rerun()
+        except Exception as e:
+            st.error(f"Google Login error: {e}")
+        
+        st.markdown("<div style='text-align: center; margin: 1rem 0; color: #64748b;'>&mdash; or use local account &mdash;</div>", unsafe_allow_html=True)
+    else:
+        st.warning("⚠️ **Google Login Setup Required**: Please add `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` to your Streamlit Secrets to enable this feature.")
+
+    # 2. Login/Register UI
     with st.container():
         auth_choice = st.selectbox("Action", ["Login", "Register"], label_visibility="collapsed")
         
@@ -89,8 +118,8 @@ def authenticate_user():
                 return False, None
                 
             if st.session_state.get('authentication_status'):
-                st.rerun() # Rerun to hide the login UI immediately
-            
+                st.rerun()
+
             if st.session_state.get('authentication_status') == False:
                 st.error('Username/password is incorrect')
                 
@@ -98,39 +127,11 @@ def authenticate_user():
             try:
                 if authenticator.register_user('Register User', preauthorization=False):
                     st.success('User registered successfully! You can now login.')
-                    # Save the new user to config.yaml by syncing config with credentials
                     config['credentials'] = authenticator.credentials
                     with open(config_path, 'w') as file:
                         yaml.dump(config, file, default_flow_style=False)
             except Exception as e:
                 st.error(f"Registration error: {str(e)}")
-
-    # 3. Google OAuth Section (Always visible on login page)
-    st.markdown("<div style='text-align: center; margin: 1.5rem 0;'>&mdash; or &mdash;</div>", unsafe_allow_html=True)
-    
-    CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
-    CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-    REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
-
-    if CLIENT_ID and CLIENT_SECRET:
-        AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-        TOKEN_URL = "https://oauth2.googleapis.com/token"
-        
-        oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
-        
-        result = oauth2.authorize_button(
-            name="🚀 Sign in with Google",
-            scope="openid email profile",
-            redirect_uri=REDIRECT_URI,
-            use_container_width=True,
-            key="google_login_btn_final"
-        )
-        
-        if result:
-            st.session_state["google_auth"] = result
-            st.rerun()
-    else:
-        st.info("💡 Tip: Use local accounts if Google Login credentials are not set in st.secrets.")
 
     # Stop execution for non-logged in users
     st.stop()
