@@ -49,6 +49,8 @@ def init_session_state():
         st.session_state.messages = []
     if 'auto_summary' not in st.session_state:
         st.session_state.auto_summary = None
+    if 'ai_task' not in st.session_state:
+        st.session_state.ai_task = "General Analysis"
 
 def main():
     load_css()
@@ -217,21 +219,26 @@ def main():
             else:
                 st.info("No visualizations could be generated.")
 
-        st.markdown("---")
-        # NEW FEATURE: Suggested Actions
         st.markdown("### 🛠️ Suggested AI Actions")
         c1, c2, c3 = st.columns(3)
         if c1.button("🔍 Find Anomalies"):
+            st.session_state.ai_task = "Identify potential anomalies, outliers, and data quality issues."
+            st.session_state.insights = None # Force regeneration
             st.session_state.current_step = 3
             st.rerun()
         if c2.button("📊 Deep Correlations"):
+            st.session_state.ai_task = "Analyze deep correlations and find hidden relationships between variables."
+            st.session_state.insights = None # Force regeneration
             st.session_state.current_step = 3
             st.rerun()
         if c3.button("🧠 Full Dataset Summary"):
+            st.session_state.ai_task = "Provide a comprehensive high-level summary of the entire dataset."
+            st.session_state.insights = None # Force regeneration
             st.session_state.current_step = 3
             st.rerun()
 
         if st.button("Generate Full AI Insights →", type="primary"):
+            st.session_state.ai_task = "General Analysis"
             st.session_state.current_step = 3
             st.rerun()
 
@@ -249,7 +256,8 @@ def main():
                     column_names=str(info['columns']),
                     dtypes=str(info['dtypes']),
                     missing_values=str(info['missing_values']),
-                    correlations="Calculated from numeric columns"
+                    correlations="Calculated from numeric columns",
+                    task=st.session_state.get('ai_task', 'General Analysis')
                 )
                 st.session_state.insights = insights
         

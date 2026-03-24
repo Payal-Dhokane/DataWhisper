@@ -17,40 +17,43 @@ def get_llm():
         temperature=0.1
     )
 
-def generate_insights(df_summary, column_names, dtypes, missing_values, correlations):
-    """Generates professional data analysis insights."""
+def generate_insights(df_summary, column_names, dtypes, missing_values, correlations, task="General Analysis"):
+    """
+    # NEW FEATURE: Focused insights based on 'task'.
+    Generates professional data analysis insights targeted to a specific objective.
+    """
     llm = get_llm()
     if not llm:
         return "AI temporarily unavailable. Please check your GROQ_API_KEY in the .env file."
 
     prompt = ChatPromptTemplate.from_template("""
     You are a professional data analyst.
-    Analyze the dataset and generate insights.
+    Your specific objective is: {task}
+    
+    Based ONLY on the provided dataset summary, provide high-quality insights focused on this objective.
+    
+    Dataset Context:
+    - Columns: {column_names}
+    - Types: {dtypes}
+    - Summary Stats: {summary_stats}
+    - Missing Values: {missing_values}
+    - Correlations: {correlations}
 
-    Dataset:
-    Columns: {column_names}
-    Types: {dtypes}
-    Summary: {summary_stats}
-    Missing: {missing_values}
-    Correlations: {correlations}
-
-    Tasks:
-    1. Give 3–5 key insights.
-    2. Highlight strong correlations (>0.7) or interesting patterns.
-    3. Identify potential outliers or data quality issues.
-    4. Suggest 2–3 actionable recommendations.
+    Tasks for this response:
+    1. Focus heavily on the requested objective: {task}.
+    2. Give 3–5 key insights.
+    3. Suggest 2 Actionable recommendations related to the results.
 
     Rules:
-    - Use bullet points only.
+    - Use bullet points.
     - Reference specific column names.
-    - Avoid vague statements.
-    - Base findings ONLY on the provided data.
     - No Hallucinations.
     """)
 
     chain = prompt | llm
     try:
         response = chain.invoke({
+            "task": task,
             "column_names": column_names,
             "dtypes": dtypes,
             "summary_stats": df_summary,
