@@ -75,7 +75,7 @@ def authenticate_user():
     
     # Main App branding
     st.markdown("<div style='text-align: center;'><h2 class='login-brand'>DataWhisper</h2></div>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.8;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 1.1rem; margin-bottom: 2.5rem; opacity: 0.7; letter-spacing: 0.5px;'>AI-Powered Exploratory Data Analysis</p>", unsafe_allow_html=True)
 
     # Injecting specific CSS for login page elements
     st.markdown("""
@@ -86,8 +86,8 @@ def authenticate_user():
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800 !important;
-            letter-spacing: 1.5px;
-            font-size: 3rem !important;
+            letter-spacing: 2px;
+            font-size: 3.5rem !important;
             margin-bottom: 0 !important;
             display: inline-block;
             text-transform: none;
@@ -96,39 +96,42 @@ def authenticate_user():
         /* Glass Login Container */
         div[data-testid="stVerticalBlock"] > div:has(div.stSelectbox), .stForm {
             background: rgba(30, 30, 46, 0.45) !important;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 20px !important;
-            padding: 2rem !important;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+            border-radius: 24px !important;
+            padding: 2.5rem !important;
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5) !important;
             width: 100% !important;
         }
         
-        /* Input fields in login */
+        /* Input fields fix */
         input {
-            background: rgba(255, 255, 255, 0.05) !important;
+            background: rgba(255, 255, 255, 0.03) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
             color: white !important;
             border-radius: 12px !important;
+            height: 45px !important;
         }
         
-        /* Fix the Login Button Styling */
+        /* Fix Selectbox width / cutoff */
+        div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+        
+        /* Submit Button Styling */
         button[kind="secondaryFormSubmit"], button[kind="primaryFormSubmit"] {
             background: linear-gradient(135deg, #7C3AED 0%, #C026D3 100%) !important;
             color: white !important;
             border-radius: 12px !important;
             border: none !important;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
-            padding: 0.6rem 2rem !important;
+            padding: 0.8rem 2rem !important;
             font-weight: 700 !important;
             width: 100% !important;
-            margin-top: 1rem !important;
-        }
-        
-        button[kind="secondaryFormSubmit"]:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6) !important;
-            filter: brightness(1.1);
+            margin-top: 1.5rem !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         </style>
     """, unsafe_allow_html=True)
