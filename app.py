@@ -132,7 +132,9 @@ def main():
         return
 
     df = st.session_state.df
-    info = get_dataframe_info(df)
+    info = None
+    if df is not None:
+        info = get_dataframe_info(df)
 
     # NEW FEATURE: Display Auto Summary at the top if available
     if st.session_state.auto_summary and st.session_state.current_step > 0:
