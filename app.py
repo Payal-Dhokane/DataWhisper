@@ -251,13 +251,17 @@ def main():
                 # For now, keeping it simple as per original report_generator's expectation of figs
                 # I might need to update report_generator later to support Plotly.
                 
+                # Generate figures for the report
+                fig_missing = plot_missing_values(df)
+                fig_corr = plot_correlation_matrix(df)
+                
                 html_report = generate_html_report(
                     info, 
                     stats_df, 
-                    None, # fig_missing - need to handle plotly
-                    None, # fig_corr - need to handle plotly
-                    st.session_state.get('insights', 'No insights generated.'), 
-                    st.session_state.get('recommendations', 'No recommendations generated.')
+                    fig_missing,
+                    fig_corr,
+                    st.session_state.get('insights', 'No insights generated. Please visit the AI Insights tab first.'), 
+                    st.session_state.get('recommendations', 'No recommendations generated. Please visit the AI Insights tab first.')
                 )
                 
                 st.download_button(
