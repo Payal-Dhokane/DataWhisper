@@ -12,8 +12,7 @@ from src.eda import (
     plot_distributions, 
     plot_count_plots
 )
-from src.llm_insights import generate_insights, explain_chart
-from src.llm_insights import generate_insights, explain_chart
+from src.llm_insights import generate_insights, explain_chart, generate_auto_summary
 from src.recommendations import generate_recommendations # Keeping it for now
 from src.auth import authenticate_user
 from src.ui_components import render_header, render_insight_card, render_step_indicator, render_info_box, add_custom_css
@@ -48,6 +47,8 @@ def init_session_state():
         st.session_state.insights = None
     if 'messages' not in st.session_state:
         st.session_state.messages = []
+    if 'auto_summary' not in st.session_state:
+        st.session_state.auto_summary = None
 
 def main():
     load_css()
@@ -99,20 +100,16 @@ def main():
             uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
             if uploaded_file:
                 st.session_state.uploaded_file = uploaded_file
-                with st.spinner("Loading dataset..."): # NEW: Spinner for data loading
-                    df = load_data(uploaded_file)
-                
+                df = load_data(uploaded_file)
                 if df is not None:
                     st.session_state.df = df
                     st.success(f"Successfully loaded {uploaded_file.name}!")
-                    
-                    # NEW FEATURE: Auto-generate AI Insights Summary on first load
-                    if 'auto_summary' not in st.session_state or st.session_state.auto_summary is None:
-                        with st.spinner("Generating ✨ AI Insights Summary..."):
-                            info = get_dataframe_info(df)
-                            st.session_state.auto_summary = generate_auto_summary(info)
-                    
                     if st.button("Proceed to Overview →", type="primary"):
+                        # NEW FEATURE: Auto-generate AI Insights Summary for speedy start
+                        with st.spinner("✨ Generating AI Insights Summary..."):
+                            df_info = str(get_dataframe_info(df))
+                            st.session_state.auto_summary = generate_auto_summary(df_info)
+                        
                         st.session_state.current_step = 1
                         st.rerun()
         
@@ -120,13 +117,8 @@ def main():
             render_info_box("Instructions", "Upload a CSV file with headers. Ensure numeric columns are properly formatted for correlation analysis.")
             if st.button("Load Sample Data (Titanic)", use_container_width=True):
                 st.session_state.uploaded_file = "sample_data/titanic.csv"
-                with st.spinner("Loading sample data..."): # NEW: Spinner for sample data loading
-                    df = load_data("sample_data/titanic.csv")
+                df = load_data("sample_data/titanic.csv")
                 st.session_state.df = df
-                # NEW FEATURE: Auto-generate AI Insights Summary for sample data
-                with st.spinner("Generating ✨ AI Insights Summary for sample data..."):
-                    info = get_dataframe_info(df)
-                    st.session_state.auto_summary = generate_auto_summary(info)
                 st.session_state.current_step = 1
                 st.rerun()
 
@@ -139,18 +131,18 @@ def main():
 
     df = st.session_state.df
 
-    # Display Auto Summary at the top if available and not on upload page
+    # NEW FEATURE: Display Auto Summary at the top if available
     if st.session_state.auto_summary and st.session_state.current_step > 0:
-        st.markdown("### ✨ AI Insights Summary")
-        st.info(st.session_state.auto_summary)
+        with st.expander("✨ AI Executive Summary", expanded=True):
+            st.info(st.session_state.auto_summary)
         st.markdown("---")
 
     # 2. Dataset Overview
     if st.session_state.current_step == 1:
-        render_header("Dataset Overview", "A quick look at your data structure and metrics.", "🔍") # Updated header description
-        st.markdown("#### 📊 Data Overview") # NEW SECTION HEADER
-        
+        render_header("Dataset Overview", "A quick look at your data structure.", "📋")
+        st.subheader("📊 Data Overview")
         info = get_dataframe_info(df)
+        
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Rows", info['shape'][0])
         col2.metric("Columns", info['shape'][1])
@@ -175,6 +167,7 @@ def main():
     # 3. Visual EDA
     elif st.session_state.current_step == 2:
         render_header("Visual Exploratory Data Analysis", "Comprehensive visualizations powered by Seaborn.", "📈")
+        st.subheader("📈 Visual Analysis")
         
         tab1, tab2, tab3 = st.tabs(["Summary & Missing", "Correlations", "Distributions"])
         
@@ -186,13 +179,8 @@ def main():
             if fig_missing:
                 st.pyplot(fig_missing)
                 if st.button("Ask AI to explain this chart"):
-                    with st.spinner("Analyzing chart..."):
-                        # IMPROVED FEATURE: Pass data context
-                        missing_pct = (df.isnull().sum() / len(df) * 100).round(2).to_dict()
-                        explanation = explain_chart(
-                            {"type": "Heatmap", "chart_title": "Missing Values Heatmap", "columns": "Missing values across all columns"}, # Added chart_title
-                            data_context=f"Missing percentages: {missing_pct}"
-                        )
+                    with st.spinner("🧠 AI is analyzing the missing values..."):
+                        explanation = explain_chart({"type": "Heatmap", "columns": "Missing values across all columns"}, data_context=f"Missing count: {sum(info['missing_values'].values())}")
                         st.info(explanation)
             else:
                 st.success("No missing values found!")
@@ -203,17 +191,8 @@ def main():
             if fig_corr:
                 st.pyplot(fig_corr)
                 if st.button("Explain Correlations"):
-                    with st.spinner("Analyzing correlations..."):
-                        # IMPROVED FEATURE: Pass correlation context
-                        numeric_df = df.select_dtypes(include=['number'])
-                        corr_matrix = numeric_df.corr().round(2)
-                        high_corr = corr_matrix[abs(corr_matrix) > 0.7].stack().reset_index()
-                        high_corr = high_corr[high_corr['level_0'] != high_corr['level_1']]
-                        
-                        explanation = explain_chart(
-                            {"type": "Correlation Matrix", "chart_title": "Correlation Matrix", "columns": "Numerical relationships"}, # Added chart_title
-                            data_context=f"High correlations found: {high_corr.values.tolist()}"
-                        )
+                    with st.spinner("🧠 AI is analyzing correlations..."):
+                        explanation = explain_chart({"type": "Correlation Matrix", "columns": "Numerical column relationships"})
                         st.info(explanation)
             else:
                 st.info("Not enough numeric columns for correlation matrix.")
@@ -230,54 +209,39 @@ def main():
                     with cols[i % 2]:
                         st.pyplot(fig)
                         if st.button(f"Explain {col_name} chart", key=f"btn_{col_name}"):
-                            with st.spinner(f"Analyzing {col_name}..."):
-                                # IMPROVED FEATURE: Pass column stats
-                                stats = df[col_name].describe().to_dict()
-                                chart_type = "Distribution Plot" if col_name in figs_dist else "Count Plot"
-                                explanation = explain_chart(
-                                    {"type": chart_type, "chart_title": f"{chart_type} for {col_name}", "columns": col_name}, # Added chart_title
-                                    data_context=f"Column statistics: {stats}"
-                                )
+                            with st.spinner(f"🧠 AI is analyzing {col_name}..."):
+                                # Smarter context
+                                context = f"Column: {col_name}, Type: {info['dtypes'].get(col_name)}"
+                                explanation = explain_chart({"type": "Distribution/Count Plot", "columns": col_name}, data_context=context)
                                 st.write(explanation)
             else:
                 st.info("No visualizations could be generated.")
 
-        if st.button("Generate AI Insights →", type="primary"):
+        st.markdown("---")
+        # NEW FEATURE: Suggested Actions
+        st.markdown("### 🛠️ Suggested AI Actions")
+        c1, c2, c3 = st.columns(3)
+        if c1.button("🔍 Find Anomalies"):
+            st.session_state.current_step = 3
+            st.rerun()
+        if c2.button("📊 Deep Correlations"):
+            st.session_state.current_step = 3
+            st.rerun()
+        if c3.button("🧠 Full Dataset Summary"):
+            st.session_state.current_step = 3
+            st.rerun()
+
+        if st.button("Generate Full AI Insights →", type="primary"):
             st.session_state.current_step = 3
             st.rerun()
 
     # 4. AI Insights
     elif st.session_state.current_step == 3:
-        render_header("AI Data Insights", "Deep analysis and recommendations powered by Llama 3.", "🧠") # Updated header title
-        st.markdown("#### 🧠 AI Insights") # NEW SECTION HEADER
+        render_header("AI Powered Insights", "Smart analysis generated by Llama 3.", "🧠")
+        st.subheader("🧠 AI Insights")
         
-        # NEW FEATURE: Suggested AI Action Buttons
-        st.markdown("**Quick Actions:**")
-        act_col1, act_col2, act_col3 = st.columns(3)
-        with act_col1:
-            if st.button("🔍 Find Anomalies"):
-                with st.spinner("Searching for anomalies..."):
-                    st.session_state.insights = (st.session_state.insights or "") + "\n\n**Anomaly Report:** " + generate_insights(
-                        "Identify outliers or unusual patterns.", 
-                        df.columns.tolist(), str(df.dtypes), str(df.isnull().sum()), "N/A"
-                    )
-        with act_col2:
-            if st.button("📊 Relationship Deep-dive"):
-                with st.spinner("Analyzing relationships..."):
-                    st.session_state.insights = (st.session_state.insights or "") + "\n\n**Relationship Analysis:** " + generate_insights(
-                        "Deep dive into how columns relate to each other.", 
-                        df.columns.tolist(), str(df.dtypes), str(df.isnull().sum()), str(df.select_dtypes(include='number').corr().round(2))
-                    )
-        with act_col3:
-            if st.button("💡 Health Check"):
-                with st.spinner("Running health check..."):
-                    st.session_state.insights = (st.session_state.insights or "") + "\n\n**Data Health Check:** " + generate_insights(
-                        "Assess data completeness, types, and usability.", 
-                        df.columns.tolist(), str(df.dtypes), str(df.isnull().sum()), "N/A"
-                    )
-
-        if st.button("Generate Comprehensive Report", type="primary"): # Changed button text
-            with st.spinner("Generating full insights..."): # Updated spinner text
+        if st.session_state.insights is None or st.button("Regenerate Insights"):
+            with st.spinner("🤖 Analyzing dataset and thinking..."):
                 info = get_dataframe_info(df)
                 summary = generate_summary_stats(df).to_string()
                 insights = generate_insights(
@@ -329,9 +293,9 @@ def main():
                     stats_df, 
                     fig_missing,
                     fig_corr,
-                    st.session_state.get('auto_summary', 'No summary available.'),
                     st.session_state.get('insights', 'No insights generated. Please visit the AI Insights tab first.'), 
-                    st.session_state.get('recommendations', 'No recommendations generated. Please visit the AI Insights tab first.')
+                    st.session_state.get('recommendations', 'No recommendations generated. Please visit the AI Insights tab first.'),
+                    st.session_state.get('auto_summary')
                 )
                 
                 st.download_button(

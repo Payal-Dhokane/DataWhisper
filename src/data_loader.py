@@ -18,7 +18,7 @@ def load_data(uploaded_file):
             st.error(f"Error reading CSV with {encoding}: {str(e)}")
             return None
     
-    st.error("❌ Could not decode the CSV file. Please ensure it's a valid CSV with standard encoding (UTF-8 or Western).")
+    st.error("Could not decode the CSV file. Please ensure it's a valid CSV with standard encoding.")
     return None
 
 def get_dataframe_info(df):
