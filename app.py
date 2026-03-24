@@ -61,30 +61,21 @@ def main():
     if not is_authenticated:
         return
         
-    # Sidebar Logout
-    if authenticator:
-        try:
-            authenticator.logout('Logout', 'sidebar')
-        except KeyError:
-            pass # Handle cookie manager issues gracefully
-    elif "google_auth" in st.session_state:
-        if st.sidebar.button("Logout"):
-            del st.session_state["google_auth"]
-            st.rerun()
     st.sidebar.divider()
-    st.sidebar.markdown("### 💜 DataWhisper")
+    st.sidebar.markdown("## 💜 DataWhisper")
     st.sidebar.markdown("Transform your data into actionable insights.")
     
     # Check for API Key
-    groq_api_key = os.getenv("GROQ_API_KEY")
-    if not groq_api_key:
-        st.sidebar.error("❌ GROQ_API_KEY missing in .env")
-        st.sidebar.info("Get one at [console.groq.com](https://console.groq.com/)")
+    if not os.getenv("GROQ_API_KEY"):
+        st.sidebar.error("⚠️ GROQ_API_KEY not found in .env")
+        st.stop()
     else:
         st.sidebar.success("✅ AI Engine Ready (Groq)")
 
-    # Sidebar Navigation - Step-by-Step
-    st.sidebar.subheader("Navigation")
+    st.sidebar.divider()
+    
+    # Navigation Sidebar
+    st.sidebar.markdown("### Navigation")
     steps = ["1. Upload Data", "2. Dataset Overview", "3. Visual EDA", "4. AI Insights", "5. Export Report"]
     
     # Map steps to st.session_state.current_step

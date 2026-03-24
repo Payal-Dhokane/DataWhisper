@@ -163,7 +163,7 @@ h3 {
 }
 
 /* Sidebar Brand Polish */
-[data-testid="stSidebar"] h3 {
+[data-testid="stSidebar"] h2 {
     background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -172,8 +172,15 @@ h3 {
     letter-spacing: 1.5px;
     margin-top: 25px !important;
     word-break: break-word;
-    font-size: 1.8rem !important;
-    text-transform: uppercase;
+    font-size: 2.2rem !important;
+}
+
+[data-testid="stSidebar"] h3 {
+    color: #A78BFA !important;
+    font-weight: 600 !important;
+    font-size: 1.2rem !important;
+    margin-top: 10px !important;
+    opacity: 0.8;
 }
 
 /* Info/Success/Warning Boxes - Purple Tint */
