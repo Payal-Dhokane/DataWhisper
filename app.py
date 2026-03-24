@@ -17,6 +17,17 @@ from src.recommendations import generate_recommendations # Keeping it for now
 from src.auth import authenticate_user
 from src.ui_components import render_header, render_insight_card, render_step_indicator, render_info_box, add_custom_css
 
+# Global error handling for the entire app
+def main_with_error_handling():
+    try:
+        main()
+    except Exception as e:
+        st.error(f"⚠️ A critical error occurred: {str(e)}")
+        st.info("Try refreshing the page or clearing the cache in the sidebar.")
+        if st.button("Restart App"):
+            st.session_state.clear()
+            st.rerun()
+
 # Load environment variables
 load_dotenv()
 
@@ -71,6 +82,11 @@ def main():
         st.stop()
     else:
         st.sidebar.success("✅ AI Engine Ready (Groq)")
+
+    if st.sidebar.button("🧹 Clear Cache & Restart"):
+        st.cache_data.clear()
+        st.session_state.clear()
+        st.rerun()
 
     st.sidebar.divider()
     
@@ -307,4 +323,4 @@ def main():
                 )
 
 if __name__ == "__main__":
-    main()
+    main_with_error_handling()
