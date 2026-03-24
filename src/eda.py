@@ -13,57 +13,61 @@ def generate_summary_stats(df):
 
 @st.cache_data(show_spinner="Generating Missing Values...")
 def plot_missing_values(df):
-    """Plots a heatmap of missing values using Seaborn for 100% reliability."""
-    missing_data = df.isnull()
+    """Plots a heatmap of missing values using Plotly."""
+    missing_data = df.isnull().astype(int)
     if missing_data.sum().sum() == 0:
         return None
     
-    # Use Matplotlib/Seaborn for reliability on Streamlit Cloud
-    plt.figure(figsize=(10, 4))
-    sns.heatmap(missing_data.head(1000), cbar=False, yticklabels=False, cmap='viridis')
-    plt.title(f"Missing Values Heatmap {'(First 1000 rows)' if len(df) > 1000 else ''}")
-    plt.tight_layout()
-    fig = plt.gcf()
-    plt.close()
+    # Take a sample if dataset is too large to keep it fast
+    plot_df = missing_data.head(1000) if len(df) > 1000 else missing_data
+    
+    fig = px.imshow(
+        plot_df, 
+        color_continuous_scale='Viridis',
+        title=f"Missing Values Heatmap {'(First 1000 rows)' if len(df) > 1000 else ''}",
+        labels=dict(x="Columns", y="Rows", color="Missing")
+    )
+    fig.update_layout(height=400)
     return fig
 
 @st.cache_data(show_spinner="Generating Correlation Matrix...")
 def plot_correlation_matrix(df):
-    """Plots a correlation matrix using Seaborn for 100% reliability."""
+    """Plots a correlation matrix using Plotly."""
     numeric_df = df.select_dtypes(include=[np.number])
     if numeric_df.empty or numeric_df.shape[1] < 2:
         return None
     
     corr = numeric_df.corr()
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap='RdBu_r', center=0, square=True)
-    plt.title("Correlation Matrix")
-    plt.tight_layout()
-    fig = plt.gcf()
-    plt.close()
+    fig = px.imshow(
+        corr,
+        text_auto=".2f",
+        color_continuous_scale='RdBu_r',
+        zmin=-1, zmax=1,
+        title="Correlation Matrix"
+    )
+    fig.update_layout(height=600)
     return fig
 
 @st.cache_data(show_spinner="Generating Distributions...")
-def plot_distributions(df, max_plots=5):
-    """Plots histograms/distributions using Matplotlib/Seaborn."""
+def plot_distributions(df, max_plots=6):
+    """Plots histograms using Plotly."""
     plots_dict = {}
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     
-    if len(numeric_cols) == 0:
-        return plots_dict
-        
     for col in numeric_cols[:max_plots]:
-        plt.figure(figsize=(8, 4))
-        sns.histplot(df[col].dropna(), kde=True, color='#818cf8')
-        plt.title(f"Distribution of {col}")
-        plt.tight_layout()
-        plots_dict[col] = plt.gcf()
-        plt.close()
+        fig = px.histogram(
+            df, x=col, 
+            nbins=30, 
+            title=f"Distribution of {col}",
+            color_discrete_sequence=['#818cf8']
+        )
+        fig.update_layout(height=350, showlegend=False)
+        plots_dict[col] = fig
     return plots_dict
 
 @st.cache_data(show_spinner="Generating Categorical Counts...")
-def plot_count_plots(df, max_plots=5, max_categories=20):
-    """Plots count plots using Matplotlib/Seaborn."""
+def plot_count_plots(df, max_plots=6, max_categories=20):
+    """Plots count plots using Plotly."""
     cat_plots_dict = {}
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
     
@@ -71,11 +75,13 @@ def plot_count_plots(df, max_plots=5, max_categories=20):
         if len(cat_plots_dict) >= max_plots:
             break
         if df[col].nunique() <= max_categories:
-            plt.figure(figsize=(8, 4))
-            sns.countplot(data=df, x=col, palette='viridis')
-            plt.title(f"Count Plot of {col}")
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            cat_plots_dict[col] = plt.gcf()
-            plt.close()
+            counts = df[col].value_counts().reset_index()
+            counts.columns = [col, 'count']
+            fig = px.bar(
+                counts, x=col, y='count',
+                title=f"Count Plot of {col}",
+                color_discrete_sequence=['#10b981']
+            )
+            fig.update_layout(height=350, showlegend=False)
+            cat_plots_dict[col] = fig
     return cat_plots_dict

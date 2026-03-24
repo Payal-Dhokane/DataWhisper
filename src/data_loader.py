@@ -3,18 +3,23 @@ import streamlit as st
 
 @st.cache_data(show_spinner="Loading data...")
 def load_data(uploaded_file):
-    """Loads a CSV file into a pandas DataFrame, with caching."""
-    try:
-        if hasattr(uploaded_file, "name"):
-            # It's an uploaded file
-            df = pd.read_csv(uploaded_file)
-        else:
-            # It's a path string (sample data)
-            df = pd.read_csv(uploaded_file)
-        return df
-    except Exception as e:
-        st.error(f"Error reading CSV: {str(e)}")
-        return None
+    """Loads a CSV file into a pandas DataFrame, with caching and encoding detection."""
+    encodings = ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']
+    
+    for encoding in encodings:
+        try:
+            if hasattr(uploaded_file, "seek"):
+                uploaded_file.seek(0)
+            df = pd.read_csv(uploaded_file, encoding=encoding)
+            return df
+        except UnicodeDecodeError:
+            continue
+        except Exception as e:
+            st.error(f"Error reading CSV with {encoding}: {str(e)}")
+            return None
+    
+    st.error("Could not decode the CSV file. Please ensure it's a valid CSV with standard encoding.")
+    return None
 
 def get_dataframe_info(df):
     """Returns basic information about the dataframe."""

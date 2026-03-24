@@ -54,60 +54,64 @@ def authenticate_user():
     
     # 1. Check Google OAuth status first if it exists in session
     if "google_auth" in st.session_state:
-        return True, None # None for authenticator as it's not needed for logic, but app handles logout
+        return True, None
 
     authenticator, config_path = load_authenticator()
     
-    # Attempt login via streamlit-authenticator
-    try:
-        name, authentication_status, username = authenticator.login('Login', 'main')
-    except Exception as e:
-        st.error(f"Authentication setup error: {str(e)}")
-        return False, None
+    # Login/Register Selection
+    auth_choice = st.selectbox("Login or Register", ["Login", "Register"], label_visibility="collapsed")
+    
+    if auth_choice == "Login":
+        try:
+            name, authentication_status, username = authenticator.login('Login', 'main')
+        except Exception as e:
+            st.error(f"Authentication setup error: {str(e)}")
+            return False, None
             
-    if authentication_status:
-        # User is logged in successfully via traditional login
-        return True, authenticator
+        if authentication_status:
+            return True, authenticator
         
-    # User is NOT logged in. Show Login UI.
-    st.markdown("<h1 style='text-align: center; color: #818cf8;'>DataWhisper</h1>", unsafe_allow_html=True)
-    
-    # Google OAuth 2.0 Integration
-    st.markdown("---")
-    st.subheader("Login with Google")
-    
-    CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
-    CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
-    REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
+        # Google OAuth Section (Only show on Login page)
+        st.markdown("---")
+        st.subheader("Login with Google")
+        
+        CLIENT_ID = st.secrets.get("GOOGLE_CLIENT_ID")
+        CLIENT_SECRET = st.secrets.get("GOOGLE_CLIENT_SECRET")
+        REDIRECT_URI = st.secrets.get("REDIRECT_URI", "https://datawhisper.streamlit.app")
 
-    if CLIENT_ID and CLIENT_SECRET:
-        AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
-        TOKEN_URL = "https://oauth2.googleapis.com/token"
-        REVOKE_URL = "https://oauth2.googleapis.com/revoke"
-        
-        oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
-        
-        result = oauth2.authorize_button(
-            name="🚀 Sign in with Google",
-            scope="openid email profile",
-            redirect_uri=REDIRECT_URI,
-            use_container_width=True
-        )
-        
-        if result:
-            st.session_state["google_auth"] = result
-            st.rerun()
-    else:
-        st.warning("⚠️ Google OAuth credentials missing in Streamlit Secrets. Login via Google is disabled.")
-        if st.button("How to add credentials?", use_container_width=True):
-            st.info("Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to your Streamlit Cloud Secrets.")
+        if CLIENT_ID and CLIENT_SECRET:
+            AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+            TOKEN_URL = "https://oauth2.googleapis.com/token"
+            
+            # Using a more robust way to render the button
+            oauth2 = OAuth2Component(CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URL, TOKEN_URL, TOKEN_URL, None)
+            
+            result = oauth2.authorize_button(
+                name="🚀 Sign in with Google",
+                scope="openid email profile",
+                redirect_uri=REDIRECT_URI,
+                use_container_width=True
+            )
+            
+            if result:
+                st.session_state["google_auth"] = result
+                st.rerun()
+        else:
+            st.warning("⚠️ Google OAuth credentials missing. Using local accounts.")
 
-    st.markdown("---")
-    st.markdown("<p style='text-align: center; color: #64748b;'>Or use your Demo Account: <b>demo</b> / <b>password</b></p>", unsafe_allow_html=True)
-    
-    if authentication_status == False:
-        st.error('Username/password is incorrect')
-    
-    # STOP the app for unauthenticated users
+        if authentication_status == False:
+            st.error('Username/password is incorrect')
+            
+    else: # Register
+        try:
+            if authenticator.register_user('Register User', preauthorization=False):
+                st.success('User registered successfully! You can now login.')
+                # Save the new user to config.yaml
+                with open(config_path, 'w') as file:
+                    yaml.dump(authenticator.config, file, default_flow_style=False)
+        except Exception as e:
+            st.error(f"Registration error: {str(e)}")
+
+    # Stop execution for non-logged in users
     st.stop()
     return False, None
