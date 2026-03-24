@@ -78,57 +78,67 @@ header {visibility: hidden;}
     padding: 10px;
 }
 
-/* Glass Buttons */
+/* Glass Buttons - Primary */
 button[kind="primary"] {
-    background: linear-gradient(135deg, var(--primary-purple) 0%, #4f46e5 100%) !important;
+    background: linear-gradient(135deg, #7C3AED 0%, #C026D3 100%) !important;
     color: white !important;
-    border-radius: 12px !important;
+    border-radius: 14px !important;
     border: none !important;
     box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
     padding: 0.6rem 2rem !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 button[kind="primary"]:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 25px rgba(124, 58, 237, 0.6) !important;
-    filter: brightness(1.1);
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6) !important;
+    filter: brightness(1.2);
 }
 
+/* Glass Buttons - Secondary (Actionable Buttons) */
 button[kind="secondary"] {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(124, 58, 237, 0.1) !important;
     backdrop-filter: blur(5px);
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 12px !important;
-    color: var(--text-main) !important;
-    transition: all 0.2s ease !important;
+    border: 1px solid rgba(124, 58, 237, 0.3) !important;
+    border-radius: 14px !important;
+    color: #E5E7EB !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
 }
 
 button[kind="secondary"]:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-color: var(--secondary-purple) !important;
+    background: rgba(124, 58, 237, 0.25) !important;
+    border-color: #A78BFA !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.2) !important;
 }
 
-/* Headers & Text Style */
+/* Headers & Text Style - Perfect Purple Grading */
 h1, h2, h3, h4 {
-    color: var(--text-main) !important;
-    font-weight: 700 !important;
-}
-
-h1 {
-    background: linear-gradient(to right, #ffffff, var(--secondary-purple));
+    background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 3rem !important;
+    font-weight: 800 !important;
+}
+
+h1 {
+    font-size: 3.2rem !important;
     margin-bottom: 40px !important;
+    text-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
 h2 {
-    color: var(--secondary-purple) !important;
-    border-bottom: 1px solid var(--glass-border);
-    padding-bottom: 10px;
+    font-size: 1.8rem !important;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+    padding-bottom: 12px;
+}
+
+h3 {
+    font-size: 1.5rem !important;
 }
 
 /* AI Insights Section Glow */
@@ -154,15 +164,16 @@ h2 {
 
 /* Sidebar Brand Polish */
 [data-testid="stSidebar"] h3 {
-    background: linear-gradient(to right, #ffffff, var(--secondary-purple));
+    background: linear-gradient(135deg, #FFFFFF 30%, #A78BFA 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 800 !important;
-    letter-spacing: 1px;
-    margin-top: 20px !important;
+    letter-spacing: 1.5px;
+    margin-top: 25px !important;
     word-break: break-word;
     font-size: 1.8rem !important;
+    text-transform: uppercase;
 }
 
 /* Info/Success/Warning Boxes */
