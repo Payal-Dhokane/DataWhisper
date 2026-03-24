@@ -132,6 +132,7 @@ def main():
         return
 
     df = st.session_state.df
+    info = get_dataframe_info(df)
 
     # NEW FEATURE: Display Auto Summary at the top if available
     if st.session_state.auto_summary and st.session_state.current_step > 0:
@@ -143,7 +144,6 @@ def main():
     if st.session_state.current_step == 1:
         render_header("Dataset Overview", "A quick look at your data structure.", "📋")
         st.subheader("📊 Data Overview")
-        info = get_dataframe_info(df)
         
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Rows", info['shape'][0])
@@ -249,7 +249,6 @@ def main():
         
         if st.session_state.insights is None or st.button("Regenerate Insights"):
             with st.spinner("🤖 Analyzing dataset and thinking..."):
-                info = get_dataframe_info(df)
                 summary = generate_summary_stats(df).to_string()
                 insights = generate_insights(
                     df_summary=summary,
