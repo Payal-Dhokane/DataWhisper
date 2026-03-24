@@ -8,36 +8,45 @@ from streamlit_oauth import OAuth2Component
 def load_authenticator():
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.yaml')
     
-    # Create default config on first run
-    if not os.path.exists(config_path):
-        # Generate robust hash dynamically
-        hashed_password = stauth.Hasher(['password']).generate()[0]
-        
-        default_config = {
-            'credentials': {
-                'usernames': {
-                    'demo': {
-                        'email': 'demo@smarteda.com',
-                        'name': 'Demo User',
-                        'password': hashed_password
-                    }
+    default_config = {
+        'credentials': {
+            'usernames': {
+                'demo': {
+                    'email': 'demo@smarteda.com',
+                    'name': 'Demo User',
+                    'password': stauth.Hasher(['password']).generate()[0]
                 }
-            },
-            'cookie': {
-                'expiry_days': 30,
-                'key': 'smart_eda_cookie_key_123_v2',
-                'name': 'smart_eda_cookie_v2'
-            },
-            'preauthorized': {
-                'emails': ['admin@smarteda.com']
             }
+        },
+        'cookie': {
+            'expiry_days': 30,
+            'key': 'smart_eda_cookie_key_123_v3',
+            'name': 'smart_eda_cookie_v3'
+        },
+        'preauthorized': {
+            'emails': ['admin@smarteda.com']
         }
+    }
+
+    # Create default config on first run or if file is missing
+    if not os.path.exists(config_path):
         with open(config_path, 'w') as file:
             yaml.dump(default_config, file, default_flow_style=False)
 
     # Load configuration
-    with open(config_path) as file:
-        config = yaml.load(file, Loader=SafeLoader)
+    config = None
+    if os.path.exists(config_path):
+        with open(config_path) as file:
+            try:
+                config = yaml.load(file, Loader=SafeLoader)
+            except Exception:
+                config = None
+
+    # Fallback if file is empty or invalid
+    if not config or 'credentials' not in config:
+        config = default_config
+        with open(config_path, 'w') as file:
+            yaml.dump(default_config, file, default_flow_style=False)
 
     # Initialize authenticator
     authenticator = stauth.Authenticate(
