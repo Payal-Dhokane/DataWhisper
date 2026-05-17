@@ -32,7 +32,7 @@ def get_pandas_agent(df):
 def query_agent(agent, query, df_context=""):
     """Queries the agent with a user prompt and extra context."""
     if agent is None:
-        return "Agent not initialized. Please check your GROQ_API_KEY."
+        return "⚠️ Agent not initialized. Please check your GROQ_API_KEY in the .env file."
     
     # Refined prompt for more reliable performance
     prompt = f"""
@@ -48,14 +48,26 @@ def query_agent(agent, query, df_context=""):
     try:
         # Simplest invocation is often most reliable
         response = agent.run(prompt)
+        
+        # FIX: Check if the response is empty
+        if not response or not str(response).strip():
+            return "⚠️ AI is currently busy and returned an empty response. Please try again in a moment."
+            
         return response
     except Exception as e:
         # Fallback if run fails
         try:
              response = agent.invoke({"input": prompt})
-             return response.get("output", "I couldn't find an answer.")
+             output = response.get("output", "")
+             
+             # FIX: Check if the fallback output is empty
+             if not output or not str(output).strip():
+                 return "⚠️ AI is currently busy and returned an empty response. Please try again."
+                 
+             return output
         except Exception as e2:
-             return f"Error executing query: {e2}"
+             # FIX: Professional error message
+             return f"⚠️ Error executing query: Could not connect to the AI server. (Details: {str(e2)})"
 
 def get_suggested_questions():
     """Returns a list of suggested questions for the chat."""

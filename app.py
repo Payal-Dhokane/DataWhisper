@@ -143,9 +143,9 @@ def main():
     if df is not None:
         info = get_dataframe_info(df)
 
-    # NEW FEATURE: Display Auto Summary at the top if available
+   # NEW FEATURE: Display Auto Summary at the top if available
     if st.session_state.auto_summary and st.session_state.current_step > 0:
-        with st.expander("✨ AI Executive Summary", expanded=True):
+        with st.expander("AI Executive Summary", icon="✨", expanded=True):
             from src.ui_components import render_insight_card
             render_insight_card("Auto Summary", st.session_state.auto_summary, icon="✨")
         st.markdown("---")
