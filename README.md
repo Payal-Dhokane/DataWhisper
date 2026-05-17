@@ -1,7 +1,10 @@
 # DataWhisper 📊
-### 🔗 Live Demo: : https://datawhisper-elnvwkoaq6og6w2kzwid2n.streamlit.app
+
+### 🔗 Live Demo: https://datawhisper-elnvwkoaq6og6w2kzwid2n.streamlit.app
 
 A full-stack AI-powered web application built with Streamlit that allows users to upload a CSV file and automatically generates insights, visualizations, and an interactive chat interface for data exploration.
+
+---
 
 ## Features
 - **Exploratory Data Analysis (EDA):** Automatic generation of summary statistics, missing value heatmaps, correlation matrices, and distribution/count plots.
@@ -26,3 +29,91 @@ A full-stack AI-powered web application built with Streamlit that allows users t
     └── report_generator.py    # HTML report generation logic
 ```
 
+## Setup Instructions
+
+### Prerequisites
+- Python 3.9 or higher installed ([download from python.org](https://www.python.org/downloads/))
+- Git installed ([download from git-scm.com](https://git-scm.com/downloads))
+- An OpenAI API key (or Groq API key) for AI features
+
+### Step 1: Clone the repository
+```bash
+git clone https://github.com/Payal-Dhokane/DataWhisper.git
+cd DataWhisper
+```
+
+### Step 2: Create a virtual environment (recommended)
+Using a virtual environment prevents dependency conflicts with other Python projects.
+
+**On Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**On macOS/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+You should see `(venv)` appear in your terminal prompt, indicating the virtual environment is active.
+
+### Step 3: Install dependencies
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+If you encounter installation errors, try installing packages one at a time:
+```bash
+pip install streamlit pandas numpy matplotlib seaborn plotly langchain langchain-core langchain-groq langchain-experimental tabulate PyYAML python-dotenv
+```
+
+### Step 4: Set up API keys
+Create a `.env` file in the project root directory:
+```bash
+# .env file
+OPENAI_API_KEY=your_openai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here  # optional, alternative to OpenAI
+```
+
+Replace `your_openai_api_key_here` with your actual API key from [platform.openai.com](https://platform.openai.com/api-keys).
+
+### Step 5: Run the application
+```bash
+streamlit run app.py
+```
+
+This will open the app in your default web browser at `http://localhost:8501`.
+
+## Common Errors & Fixes
+
+| Error | Likely Cause | Solution |
+|-------|-------------|----------|
+| `ModuleNotFoundError: No module named 'streamlit'` | Dependencies not installed | Run `pip install -r requirements.txt` |
+| `ImportError: cannot import name '...' from 'langchain'` | LangChain version mismatch | Run `pip install --upgrade langchain langchain-core langchain-experimental` |
+| `OpenAI API key not found` | Missing `.env` file or API key | Create a `.env` file with `OPENAI_API_KEY=your_key` |
+| `Streamlit App - Module Not Found` | Running from wrong directory | Make sure you're in the project root (`cd DataWhisper`) |
+| `Permission denied` on venv activation (Windows) | Execution policy restriction | Run PowerShell as Administrator and execute: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` |
+| `pip: command not found` | Python/Pip not in PATH | Reinstall Python and check "Add Python to PATH" during installation |
+
+If you're still stuck, please [open an issue](https://github.com/Payal-Dhokane/DataWhisper/issues/new).
+
+## Usage
+
+1. Launch the app with `streamlit run app.py`
+2. Upload a CSV file using the file uploader widget
+3. Explore the automatically generated visualizations and statistics
+4. Use the chat interface to ask questions about your data in plain English
+5. Download the HTML report for sharing or documentation
+
+## Sample Data
+A sample Titanic dataset is included in the `sample_data/` directory to test the app without your own data.
+
+## Tech Stack
+- **Frontend:** Streamlit
+- **Data Processing:** Pandas, NumPy
+- **Visualization:** Matplotlib, Seaborn, Plotly
+- **AI/LLM:** LangChain, OpenAI / Groq
+- **Authentication:** Streamlit-Authenticator, Streamlit-OAuth
