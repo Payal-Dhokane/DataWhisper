@@ -3,6 +3,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 import streamlit as st
+from src.validators import RequestValidator, ValidationResult
 
 # Set aesthetic styles
 sns.set_theme(style="whitegrid", palette="muted")
@@ -18,7 +19,8 @@ def generate_summary_stats(df):
 @st.cache_data(show_spinner="Generating Missing Values...")
 def plot_missing_values(df):
     """Plots a heatmap of missing values using Seaborn."""
-    if df.empty:
+    validation = RequestValidator.validate_dataframe(df)
+    if not validation.is_valid:
         return None
     missing_data = df.isnull()
     if missing_data.sum().sum() == 0:
@@ -32,8 +34,10 @@ def plot_missing_values(df):
 @st.cache_data(show_spinner="Generating Correlation Matrix...")
 def plot_correlation_matrix(df):
     """Plots a correlation matrix using Seaborn."""
-    if df.empty:
+    validation = RequestValidator.validate_plot_data(df, required_cols=2)
+    if not validation.is_valid:
         return None
+    
     numeric_df = df.select_dtypes(include=[np.number])
     # Remove columns that are all NaN or constant
     numeric_df = numeric_df.dropna(axis=1, how='all')
@@ -52,7 +56,8 @@ def plot_correlation_matrix(df):
 def plot_distributions(df, max_plots=6):
     """Plots histograms for numeric columns using Seaborn."""
     plots_dict = {}
-    if df.empty:
+    validation = RequestValidator.validate_dataframe(df)
+    if not validation.is_valid:
         return plots_dict
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     
@@ -71,7 +76,8 @@ def plot_distributions(df, max_plots=6):
 def plot_count_plots(df, max_plots=6, max_categories=20):
     """Plots count plots for categorical columns using Seaborn."""
     cat_plots_dict = {}
-    if df.empty:
+    validation = RequestValidator.validate_dataframe(df)
+    if not validation.is_valid:
         return cat_plots_dict
     cat_cols = df.select_dtypes(exclude=[np.number]).columns
     
