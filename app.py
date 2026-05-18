@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 
 # Import custom modules
-from src.data_loader import load_data, get_dataframe_info, get_data_preview
+from src.data_loader import load_data, get_dataframe_info, get_data_preview, validate_file_size, MAX_FILE_SIZE_MB
 from src.eda import (
     generate_summary_stats, 
     plot_missing_values, 
@@ -108,6 +108,8 @@ def main():
         with col1:
             uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
             if uploaded_file:
+                if not validate_file_size(uploaded_file):
+                    st.stop()
                 st.session_state.uploaded_file = uploaded_file
                 df = load_data(uploaded_file)
                 if df is not None:
@@ -123,7 +125,7 @@ def main():
                         st.rerun()
         
         with col2:
-            render_info_box("Instructions", "Upload a CSV file with headers. Ensure numeric columns are properly formatted for correlation analysis.")
+            render_info_box("Instructions", f"Upload a CSV file with headers (max {MAX_FILE_SIZE_MB} MB). Ensure numeric columns are properly formatted for correlation analysis.")
             if st.button("Load Sample Data (Titanic)", use_container_width=True):
                 st.session_state.uploaded_file = "sample_data/titanic.csv"
                 df = load_data("sample_data/titanic.csv")
