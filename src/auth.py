@@ -3,11 +3,46 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 import os
+import secrets  
 from streamlit_oauth import OAuth2Component
+
+# ---------------------------------------------------------------------------
+# Cookie secret key
+# ---------------------------------------------------------------------------
+# SECURITY: The cookie key is used by streamlit-authenticator to sign session
+# cookies. It MUST be a secret value loaded from the environment — never
+# hardcoded in source code.
+#
+# Generate a strong key once and add it to your .env file:
+#   python -c "import secrets; print(secrets.token_hex(32))"
+#
+# Then set: COOKIE_SECRET_KEY=<the generated value>
+# ---------------------------------------------------------------------------
+_COOKIE_SECRET_KEY = os.getenv("COOKIE_SECRET_KEY", "")
+
+def _get_cookie_key() -> str:
+    """
+    Returns the cookie signing key from the environment.
+    Aborts with a clear error if the variable is missing or empty,
+    rather than silently falling back to a hardcoded/weak value.
+    """
+    if not _COOKIE_SECRET_KEY:
+        st.error(
+            "🔐 **COOKIE_SECRET_KEY is not set.**\n\n"
+            "Add a strong random key to your `.env` file:\n\n"
+            "```\n"
+            "# Generate with: python -c \"import secrets; print(secrets.token_hex(32))\"\n"
+            "COOKIE_SECRET_KEY=your_generated_key_here\n"
+            "```\n\n"
+            "This key is required to sign authentication cookies securely."
+        )
+        st.stop()
+    return _COOKIE_SECRET_KEY
 
 def load_authenticator():
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'config.yaml')
-    
+    cookie_key = _get_cookie_key()
+
     default_config = {
         'credentials': {
             'usernames': {
@@ -20,7 +55,7 @@ def load_authenticator():
         },
         'cookie': {
             'expiry_days': 30,
-            'key': 'smart_eda_cookie_key_123_v3',
+            'key': cookie_key,
             'name': 'smart_eda_cookie_v3'
         },
         'preauthorized': {
@@ -52,7 +87,7 @@ def load_authenticator():
     authenticator = stauth.Authenticate(
         config['credentials'],
         config['cookie']['name'],
-        config['cookie']['key'],
+        cookie_key,
         config['cookie']['expiry_days'],
         config['preauthorized']
     )
