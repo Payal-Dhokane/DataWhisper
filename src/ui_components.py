@@ -1,4 +1,5 @@
 import streamlit as st
+import html as html_lib  # stdlib — html.escape()
 
 def render_header(title, subtitle=None, icon=None):
     """Renders a consistent header for app sections."""
@@ -11,15 +12,21 @@ def render_header(title, subtitle=None, icon=None):
     st.divider()
 
 def render_insight_card(title, content, icon="💡"):
-    """Renders an insight or recommendation in a glass card format."""
+    """
+    Renders an insight or recommendation in a glass card format.
+    Security: title and icon are escaped with html.escape() before being
+    interpolated into the unsafe_allow_html block. content is never
+    interpolated into raw HTML — it is rendered via st.markdown() which
+    sandboxes arbitrary tags while still rendering bullet points and bold.
+    """
+    safe_title = html_lib.escape(str(title))
+    safe_icon = html_lib.escape(str(icon))
     st.markdown(f"""
-    <div style="background: rgba(30, 30, 46, 0.6); backdrop-filter: blur(10px); padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
-        <h4 style="margin-top: 0; color: #A78BFA; font-weight: 700;">{icon} {title}</h4>
-        <div style="color: #E5E7EB; font-size: 1rem; line-height: 1.6;">
-            {content}
-        </div>
+    <div style="background: rgba(30, 30, 46, 0.6); backdrop-filter: blur(10px); padding: 24px 24px 8px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 4px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
+        <h4 style="margin-top: 0; color: #A78BFA; font-weight: 700;">{safe_icon} {safe_title}</h4>
     </div>
     """, unsafe_allow_html=True)
+    st.markdown(content)
 
 def render_step_indicator(current_step):
     """Renders a progress indicator for the user flow."""
