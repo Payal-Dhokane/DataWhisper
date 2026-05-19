@@ -14,7 +14,7 @@ def load_authenticator():
                 'demo': {
                     'email': 'demo@smarteda.com',
                     'name': 'Demo User',
-                    'password': stauth.Hasher(['password']).generate()[0]
+                    'password': stauth.Hasher.hash('password')
                 }
             }
         },
@@ -53,8 +53,7 @@ def load_authenticator():
         config['credentials'],
         config['cookie']['name'],
         config['cookie']['key'],
-        config['cookie']['expiry_days'],
-        config['preauthorized']
+        config['cookie']['expiry_days']
     )
     return authenticator, config, config_path
 
@@ -161,11 +160,13 @@ def authenticate_user():
         
         if auth_choice == "Login":
             try:
-                name, authentication_status, username = authenticator.login('Login', 'main')
+                result = authenticator.login('main', key='Login')
+                if result is not None:
+                    name, authentication_status, username = result
             except Exception as e:
                 st.error(f"Authentication setup error: {str(e)}")
                 return False, None
-                
+
             if st.session_state.get('authentication_status'):
                 st.rerun()
 
@@ -174,11 +175,14 @@ def authenticate_user():
                 
         else: # Register
             try:
-                if authenticator.register_user('Register User', preauthorization=False):
-                    st.success('User registered successfully! You can now login.')
-                    config['credentials'] = authenticator.credentials
-                    with open(config_path, 'w') as file:
-                        yaml.dump(config, file, default_flow_style=False)
+                result = authenticator.register_user('main', pre_authorized=None, key='Register User')
+                if result:
+                    name, email, password = result
+                    if name and email and password:
+                        with open(config_path, 'w') as file:
+                            yaml.dump(config, file, default_flow_style=False)
+                        st.success('User registered successfully! Please login with your credentials.')
+                        st.rerun()
             except Exception as e:
                 st.error(f"Registration error: {str(e)}")
 
