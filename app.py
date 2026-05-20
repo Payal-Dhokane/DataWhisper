@@ -1,13 +1,5 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="DataWhisper",
-    layout="wide"
-)
-
-st.cache_data.clear()
-st.cache_resource.clear()
-
 import pandas as pd
 import os
 from dotenv import load_dotenv
