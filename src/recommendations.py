@@ -2,7 +2,6 @@ import os
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-from src.validators import RequestValidator
 
 load_dotenv()
 
@@ -20,10 +19,6 @@ def get_llm():
 
 def generate_recommendations(df_info):
     """Generates smart recommendations for preprocessing based on dataframe info."""
-    validation = RequestValidator.validate_llm_inputs(df_info=df_info)
-    if not validation.is_valid:
-        return f"Validation Error: {validation.error_message}"
-    
     llm = get_llm()
     if not llm:
         return "AI temporarily unavailable for recommendations. Check GROQ_API_KEY."

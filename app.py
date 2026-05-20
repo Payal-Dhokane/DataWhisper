@@ -21,7 +21,6 @@ from src.llm_insights import generate_insights, explain_chart, generate_auto_sum
 from src.recommendations import generate_recommendations # Keeping it for now
 from src.auth import authenticate_user
 from src.ui_components import render_header, render_insight_card, render_step_indicator, render_info_box, add_custom_css
-from src.validators import RequestValidator, ValidationResult
 
 # Global error handling for the entire app
 def main_with_error_handling():
@@ -114,40 +113,28 @@ def main():
         with col1:
             uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
             if uploaded_file:
-                file_validation = RequestValidator.validate_csv_file(uploaded_file)
-                if not file_validation.is_valid:
-                    file_validation.show_error()
-                else:
-                    st.session_state.uploaded_file = uploaded_file
-                    df = load_data(uploaded_file)
-                    
-                    df_validation = RequestValidator.validate_dataframe(df)
-                    if not df_validation.is_valid:
-                        df_validation.show_error()
-                    else:
-                        st.session_state.df = df
-                        st.success(f"Successfully loaded {uploaded_file.name}!")
-                        if st.button("Proceed to Overview →", type="primary"):
-                            with st.spinner("✨ Generating AI Insights Summary..."):
-                                df_info = str(get_dataframe_info(df))
-                                st.session_state.auto_summary = generate_auto_summary(df_info)
-                            
-                            st.session_state.current_step = 1
-                            st.rerun()
+                st.session_state.uploaded_file = uploaded_file
+                df = load_data(uploaded_file)
+                if df is not None:
+                    st.session_state.df = df
+                    st.success(f"Successfully loaded {uploaded_file.name}!")
+                    if st.button("Proceed to Overview →", type="primary"):
+                        # NEW FEATURE: Auto-generate AI Insights Summary for speedy start
+                        with st.spinner("✨ Generating AI Insights Summary..."):
+                            df_info = str(get_dataframe_info(df))
+                            st.session_state.auto_summary = generate_auto_summary(df_info)
+                        
+                        st.session_state.current_step = 1
+                        st.rerun()
         
         with col2:
             render_info_box("Instructions", "Upload a CSV file with headers. Ensure numeric columns are properly formatted for correlation analysis.")
             if st.button("Load Sample Data (Titanic)", use_container_width=True):
                 st.session_state.uploaded_file = "sample_data/titanic.csv"
                 df = load_data("sample_data/titanic.csv")
-                
-                df_validation = RequestValidator.validate_dataframe(df)
-                if not df_validation.is_valid:
-                    df_validation.show_error()
-                else:
-                    st.session_state.df = df
-                    st.session_state.current_step = 1
-                    st.rerun()
+                st.session_state.df = df
+                st.session_state.current_step = 1
+                st.rerun()
 
     # If no data is loaded, stop here
     if st.session_state.df is None and st.session_state.current_step > 0:
