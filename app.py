@@ -1,12 +1,17 @@
-import pandas as pd
-import os
-from dotenv import load_dotenv
 import streamlit as st
+
+st.set_page_config(
+    page_title="DataWhisper",
+    layout="wide"
+)
 
 st.cache_data.clear()
 st.cache_resource.clear()
 
-st.title("DataWhisper")
+import pandas as pd
+import os
+from dotenv import load_dotenv
+
 
 # Import custom modules
 from src.data_loader import load_data, get_dataframe_info, get_data_preview
