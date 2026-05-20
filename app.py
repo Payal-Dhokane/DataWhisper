@@ -1,12 +1,10 @@
+# Responsive auth UI restoration
+import streamlit as st
+
 import pandas as pd
 import os
 from dotenv import load_dotenv
-import streamlit as st
 
-st.cache_data.clear()
-st.cache_resource.clear()
-
-st.title("DataWhisper")
 
 # Import custom modules
 from src.data_loader import load_data, get_dataframe_info, get_data_preview

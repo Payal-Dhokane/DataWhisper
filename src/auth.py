@@ -1,3 +1,4 @@
+# Authentication stabilization patch
 import streamlit as st
 # pyrefly: ignore [missing-import]
 import streamlit_authenticator as stauth
@@ -339,7 +340,9 @@ def authenticate_user():
         
         if auth_choice == "Login":
             try:
-                name, authentication_status, username = authenticator.login('Login', 'main')
+                result = authenticator.login('Login', 'main')
+                if result is not None:
+                    name, authentication_status, username = result
             except Exception as e:
                 st.error(f"Authentication setup error: {str(e)}")
                 return False, None
@@ -406,11 +409,12 @@ def authenticate_user():
             """, unsafe_allow_html=True)
             
             try:
-                if authenticator.register_user('Register User', preauthorization=False):
-                    st.success('User registered successfully! You can now login.')
-                    config['credentials'] = authenticator.credentials
+                result = authenticator.register_user('Register User', 'main', False)
+                if result:
                     with open(config_path, 'w') as file:
                         yaml.dump(config, file, default_flow_style=False)
+                    st.success('User registered successfully! Please login with your credentials.')
+                    st.rerun()
             except Exception as e:
                 st.error(f"Registration error: {str(e)}")
 
