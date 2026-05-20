@@ -1,6 +1,6 @@
-import streamlit as st
-import streamlit_authenticator as stauth
 import yaml
+import streamlit_authenticator as stauth
+import streamlit as st
 from yaml.loader import SafeLoader
 import os
 from streamlit_oauth import OAuth2Component
@@ -14,7 +14,7 @@ def load_authenticator():
                 'demo': {
                     'email': 'demo@smarteda.com',
                     'name': 'Demo User',
-                    'password': stauth.Hasher.hash('password')
+                    'password': stauth.Hasher(['password']).generate()[0]
                 }
             }
         },
