@@ -2,7 +2,6 @@ import os
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-from src.validators import RequestValidator
 
 load_dotenv()
 
@@ -23,15 +22,6 @@ def generate_insights(df_summary, column_names, dtypes, missing_values, correlat
     # NEW FEATURE: Focused insights based on 'task'.
     Generates professional data analysis insights targeted to a specific objective.
     """
-    validation = RequestValidator.validate_llm_inputs(
-        df_summary=df_summary,
-        column_names=column_names,
-        dtypes=dtypes,
-        task=task
-    )
-    if not validation.is_valid:
-        return f"Validation Error: {validation.error_message}"
-    
     llm = get_llm()
     if not llm:
         return "AI temporarily unavailable. Please check your GROQ_API_KEY in the .env file."
@@ -77,10 +67,6 @@ def generate_insights(df_summary, column_names, dtypes, missing_values, correlat
 # NEW FEATURE: Auto-generated executive summary
 def generate_auto_summary(df_info_str):
     """Generates a 3-5 point executive summary from dataframe info."""
-    validation = RequestValidator.validate_llm_inputs(df_info_str=df_info_str)
-    if not validation.is_valid:
-        return f"Validation Error: {validation.error_message}"
-    
     llm = get_llm()
     if not llm:
         return "AI unavailable for summary."
@@ -107,16 +93,6 @@ def explain_chart(chart_info, data_context=None):
     # NEW FEATURE: Smarter chart explanation with data-driven context.
     Generates a simple explanation for a given chart's metadata and optional context.
     """
-    if not chart_info or not isinstance(chart_info, dict):
-        return "Validation Error: Invalid chart information provided."
-    
-    validation = RequestValidator.validate_llm_inputs(
-        chart_type=chart_info.get('type'),
-        columns=chart_info.get('columns')
-    )
-    if not validation.is_valid:
-        return f"Validation Error: {validation.error_message}"
-    
     llm = get_llm()
     if not llm:
         return "AI unavailable for chart explanation."

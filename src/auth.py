@@ -55,7 +55,8 @@ def load_authenticator():
         config['credentials'],
         config['cookie']['name'],
         config['cookie']['key'],
-        config['cookie']['expiry_days']
+        config['cookie']['expiry_days'],
+        config['preauthorized']
     )
     return authenticator, config, config_path
 
@@ -345,7 +346,7 @@ def authenticate_user():
             except Exception as e:
                 st.error(f"Authentication setup error: {str(e)}")
                 return False, None
-
+                
             if st.session_state.get('authentication_status'):
                 st.rerun()
 

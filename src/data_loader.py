@@ -1,15 +1,9 @@
 import pandas as pd
 import streamlit as st
-from src.validators import RequestValidator, ValidationResult
 
 @st.cache_data(show_spinner="Loading data...")
 def load_data(uploaded_file):
     """Loads a CSV file into a pandas DataFrame, with caching and encoding detection."""
-    file_validation = RequestValidator.validate_csv_file(uploaded_file)
-    if not file_validation.is_valid:
-        file_validation.show_error()
-        return None
-    
     encodings = ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']
     
     for encoding in encodings:
@@ -17,12 +11,6 @@ def load_data(uploaded_file):
             if hasattr(uploaded_file, "seek"):
                 uploaded_file.seek(0)
             df = pd.read_csv(uploaded_file, encoding=encoding)
-            
-            df_validation = RequestValidator.validate_dataframe(df)
-            if not df_validation.is_valid:
-                df_validation.show_error()
-                return None
-            
             return df
         except UnicodeDecodeError:
             continue
