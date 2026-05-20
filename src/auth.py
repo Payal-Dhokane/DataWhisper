@@ -159,13 +159,13 @@ def authenticate_user():
         auth_choice = st.radio("Action", ["Login", "Register"], label_visibility="collapsed", horizontal=True)
         
         if auth_choice == "Login":
-            try:
-                result = authenticator.login('main', key='Login')
-                if result is not None:
-                    name, authentication_status, username = result
-            except Exception as e:
-                st.error(f"Authentication setup error: {str(e)}")
-                return False, None
+    try:
+        result = authenticator.login('main')
+        if result is not None:
+            name, authentication_status, username = result
+    except Exception as e:
+        st.error(f"Authentication setup error: {str(e)}")
+        return False, None
 
             if st.session_state.get('authentication_status'):
                 st.rerun()
@@ -173,10 +173,9 @@ def authenticate_user():
             if st.session_state.get('authentication_status') == False:
                 st.error('Username/password is incorrect')
                 
-        else: # Register
-            try:
-                result = authenticator.register_user('main', pre_authorized=None, key='Register User')
-                if result:
+        else:  # Register
+    try:
+        result = authenticator.register_user('main', pre_authorized=None)
                     name, email, password = result
                     if name and email and password:
                         with open(config_path, 'w') as file:
