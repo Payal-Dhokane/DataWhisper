@@ -13,6 +13,26 @@ A full-stack AI-powered web application built with Streamlit that allows users t
 - **Recommendations:** Actionable preprocessing steps (handling missing values, outliers) suggested by AI.
 - **Report Export:** Generate and download a comprehensive HTML report containing your visualizations and AI insights.
 
+## Screenshots
+
+### 1. Login
+![Login](assets/screenshots/login.png)
+
+### 2. Upload Data
+![Upload Data](assets/screenshots/upload-data.png)
+
+### 3. Dataset Overview
+![Dataset Overview](assets/screenshots/dataset-overview.png)
+
+### 4. Visual EDA
+![Visual EDA](assets/screenshots/visual-eda.png)
+
+### 5. Missing Values Heatmap
+![Missing Values Heatmap](assets/screenshots/missing-values-heatmap.png)
+
+### 6. Export Report
+![Export Report](assets/screenshots/export-report.png)
+
 ## Project Structure
 ```text
 ├── app.py                     # Main Streamlit application
