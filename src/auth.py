@@ -1,3 +1,4 @@
+# Authentication stabilization patch
 import streamlit as st
 # pyrefly: ignore [missing-import]
 import streamlit_authenticator as stauth

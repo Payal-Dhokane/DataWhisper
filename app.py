@@ -1,3 +1,4 @@
+# Responsive auth UI restoration
 import streamlit as st
 
 import pandas as pd
