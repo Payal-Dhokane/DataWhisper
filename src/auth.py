@@ -15,7 +15,7 @@ def load_authenticator():
                 'demo': {
                     'email': 'demo@smarteda.com',
                     'name': 'Demo User',
-                    'password': stauth.Hasher.hash('password')
+                    'password': stauth.Hasher(['password']).generate()[0]
                 }
             }
         },
@@ -338,7 +338,7 @@ def authenticate_user():
         
         if auth_choice == "Login":
             try:
-                result = authenticator.login('main', key='Login')
+                result = authenticator.login('Login', 'main')
                 if result is not None:
                     name, authentication_status, username = result
             except Exception as e:
@@ -407,14 +407,12 @@ def authenticate_user():
             """, unsafe_allow_html=True)
             
             try:
-                result = authenticator.register_user('main', pre_authorized=None, key='Register User')
+                result = authenticator.register_user('Register User', 'main', False)
                 if result:
-                    name, email, password = result
-                    if name and email and password:
-                        with open(config_path, 'w') as file:
-                            yaml.dump(config, file, default_flow_style=False)
-                        st.success('User registered successfully! Please login with your credentials.')
-                        st.rerun()
+                    with open(config_path, 'w') as file:
+                        yaml.dump(config, file, default_flow_style=False)
+                    st.success('User registered successfully! Please login with your credentials.')
+                    st.rerun()
             except Exception as e:
                 st.error(f"Registration error: {str(e)}")
 
